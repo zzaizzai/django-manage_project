@@ -5,4 +5,4 @@ def index(request):
     myapp_data = {
     'app': 'Django'
     }
-    return render(request, 'project_index.html', myapp_data)
+    return render(request, 'core_index.html', myapp_data)

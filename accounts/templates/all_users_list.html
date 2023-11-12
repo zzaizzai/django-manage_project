@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+{% if users %}
+    {% for user in users %}
+        {{user}}
+    {% endfor %}
+{% endif %}
+<h3>users list page</h3>
+
+{% endblock %}
