@@ -1,24 +1,4 @@
 
-.mx-1 {
-    margin-left: 1px;
-    margin-right: 1px;
-}
-
-.my-1 {
-    margin-top: 1px;
-    margin-bottom: 1px;
-}
-
-.px-1 {
-    padding-left: 1px;
-    padding-right: 1px;
-}
-
-.py-1 {
-    padding-bottom: 1px;
-    padding-top: 1px;
-}
-
 body {
     background-color: #eee;
 }
@@ -50,3 +30,4 @@ body {
   padding: 10px;
   color: white;
 }
+

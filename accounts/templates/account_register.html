@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+{% if form.erros %}
+<p>something worng with your form</p>
+{% endif %}
+
+
+    <div class="">
+        <h4>Register Page</h4>
+        <br>
+        <br>
+        <form action="{% url 'account_register'  %}" method="POST">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+
+{% endblock %}
