@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<style>
+
+/* Optional: Add your custom styles here */
+th.col-1 {
+    width: 5%; /* Adjust the width as needed */
+}
+
+th.col-4 {
+    width: 60%; /* Adjust the width as needed */
+}
+
+th.col-2 {
+    width: 15%; /* Adjust the width as needed */
+}
+
+th.col-3 {
+    width: 15%; /* Adjust the width as needed */
+}
+</style>
+
+
+<div class="container mt-5">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th class="col-1">ID</th>
+                <th class="col-4">Title</th>
+                <th class="col-2">Username</th>
+                <th class="col-3">Created</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for project in projects %}
+                <tr>
+                    <td>{{ project.id }}</td>
+                    <td>{{ project.title }}</td>
+                    <td>{{ project.username }}</td>
+                    <td>{{ project.get_time_ago }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %} {% block body %}
+
+<p>This is project Add page.</p>
+
+<form action="" method="POST">
+  {% csrf_token %}
+  <div class="vertical">
+    <input type="text" name="title" value="{{title}}" />
+    <textarea name="text" id="" cols="30" rows="10">{{text}}</textarea>
+    <button>done</button>
+  </div>
+</form>
+
+{% endblock %}
