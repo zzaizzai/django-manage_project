@@ -9,8 +9,8 @@
 
     <div>
         {% if user.is_authenticated  %}
-            {{user.username}}
-            <a class="nav-item" href="{% url 'account_logout' %}">logged out</a>
+            <a class="nav-item" href="{% url 'mypage' %}">{{user.username}}</a>
+            <a class="nav-item" href="{% url 'account_logout' %}">log out</a>
             
         {% else %}
             <a class="nav-item" href="{% url 'account_login' %}">login</a>

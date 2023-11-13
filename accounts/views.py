@@ -47,3 +47,8 @@ def account_logout(request):
     messages.success(request, ("logged out"))
 
     return redirect('account_login')
+
+
+def mypage(request):
+    
+    return render(request, 'mypage.html')
