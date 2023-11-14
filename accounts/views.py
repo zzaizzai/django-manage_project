@@ -1,9 +1,11 @@
+from typing import Any
+from django import http
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db import connection
 from django.contrib import messages
-
+from django.views.generic.base import TemplateView
 from .forms import RegisterUserForm
 # Create your views here.
 
@@ -52,3 +54,20 @@ def account_logout(request):
 def mypage(request):
     
     return render(request, 'mypage.html')
+
+
+class DetailUser(TemplateView):
+    template_name = 'detail_account.html'
+    
+    def get(self, request, *args: Any, **kwargs: Any):
+        
+        context = super().get_context_data()
+        user_id = self.kwargs['pk']
+        
+        try:
+            context['user'] = User.objects.get(id=user_id)
+        except:
+            return redirect('all_users_list')
+        
+        return render(request, self.template_name, context)
+    

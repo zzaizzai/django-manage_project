@@ -20,6 +20,26 @@ th.col-2 {
 th.col-3 {
     width: 15%; /* Adjust the width as needed */
 }
+
+
+/* 기본 스타일 */
+a {
+  color: black;  /* 검정색 */
+  text-decoration: none;  /* 밑줄 제거 */
+  transition: box-shadow 0.3s ease-in;  /* 호버 시 새도우 효과에 대한 전환 효과 */
+  border-radius: 8px;  /* 둥글게 만들기 위해 border-radius 속성 추가 */
+  padding: 0 2px;
+  display: inline-block; /* 인라인 블록으로 지정하여 여백이 적용되도록 함 */
+}
+
+
+/* 호버 및 포커스 스타일 */
+a:hover
+{   color: black;  /* 검정색 */
+    box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.5);  /* 새도우 효과, spread 값 조절 */
+    
+}
+
 </style>
 
 
@@ -37,8 +57,8 @@ th.col-3 {
             {% for project in projects %}
                 <tr>
                     <td>{{ project.id }}</td>
-                    <td>{{ project.title }}</td>
-                    <td>{{ project.username }}</td>
+                    <td><a href="{% url 'detail_project' project.id %}">{{ project.title }}</a></td>
+                    <td>{{ project.get_created_user_info.username }}</td>
                     <td>{{ project.get_time_ago }}</td>
                 </tr>
             {% endfor %}

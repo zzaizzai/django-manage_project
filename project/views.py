@@ -1,4 +1,6 @@
-from django.http import HttpResponse
+from typing import Any
+from django import http
+from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect
 from django.views.generic.base import TemplateView
 from .models import Project
@@ -29,6 +31,19 @@ class AllProjectsList(TemplateView):
         context['projects'] = all_projects
         return render(request, self.template_name, context)
     
+
+class DetailProject(TemplateView):
+    template_name = 'detail_project.html'
+    # def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+    #     project_id = self.kwargs['pk']
+    #     project = Project.objects.get(id=project_id)
+    #     return 
+    
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        context = super().get_context_data()
+        project_id = self.kwargs['pk']
+        context['project'] = Project.objects.get(id=project_id)
+        return render(request, self.template_name, context)
 
 class AddProject(TemplateView):
     template_name = 'add_project.html'

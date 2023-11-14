@@ -1,0 +1,25 @@
+
+{% extends "base.html" %}
+
+{% block body %}
+<h4>User page</h4>
+
+<br>
+
+<h5 class="mr-auto">{{user.id}}. {{user.username}}</h5>
+
+
+<p >First Name: {{user.first_name}}</p>
+<p >Last Name : {{user.last_name}}</p>
+
+
+
+<div class="mr-auto">
+    Joined: {{user.date_joined}}
+</div>
+
+
+
+{% endblock %}
+
+
