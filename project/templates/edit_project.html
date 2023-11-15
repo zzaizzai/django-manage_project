@@ -5,9 +5,20 @@
 <p>This is project Edit page.</p>
 
 
-<form action="post">
-    <input type="text">
-    <input type="text">
-
-</form>
+<div class="container mt-5">
+    <form action="" method="POST">
+      {% csrf_token %}
+      <input hidden type="text" class="form-control" name="id" value="{{ project.id }}" id="id" required>
+      <div class="mb-3">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" name="title" value="{{ project.title }}" id="title" required>
+      </div>
+      <div class="mb-3">
+        <label for="text" class="form-label">Text</label>
+        <textarea class="form-control" name="text" id="text" rows="5" required>{{ project.text }}</textarea>
+      </div>
+      <button type="submit" class="button blue">Edit</button>
+    </form>
+  </div>
+  
 {% endblock %}

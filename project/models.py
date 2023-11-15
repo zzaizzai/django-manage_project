@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from accounts.models import CustomUser
 from django.utils import timezone
 from datetime import timedelta
 # Create your models here.
@@ -29,24 +29,31 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+    
+    
+    def show_time_created_with_updated(self) -> str:
+        if self.formatted_datetime_updated is None:
+            return "Posted at " + self.formatted_datetime_created
+        else:
+            return f"Posted at {self.formatted_datetime_created()} (Last updated at {self.formatted_datetime_updated()})"
 
     def get_created_user_info(self):
         try:
-            user = User.objects.get(id=self.user_created_id)
+            user = CustomUser.objects.get(id=self.user_created_id)
             return user
         except User.DoesNotExist:
             return None
     
     def get_completed_user_info(self):
         try:
-            user = User.objects.get(id=self.user_completed_id)
+            user = CustomUser.objects.get(id=self.user_completed_id)
             return user
         except User.DoesNotExist:
             return None
         
     def get_user_info(self, user_id: int):
         try:
-            user = User.objects.get(id=user_id)
+            user = CustomUser.objects.get(id=user_id)
             return user
         except User.DoesNotExist:
             return None
@@ -77,6 +84,20 @@ class Project(models.Model):
             else:
                 return f'{days} days ago'
 
+
+    def formatted_datetime_created(self) -> str:
+        return self.datetime_created.strftime("%Y-%m-%d %H:%M")
+
+
+    def formatted_datetime_updated(self) -> str:
+        return self.datetime_created.strftime("%Y-%m-%d %H:%M") or None
+
+    def formatted_datetime_due(self) -> str:
+        if self.date_due:
+            return self.date_due.strftime("%Y-%m-%d")
+        else:
+            return "No due date"
+        
 class ProjectMemeber(models.Model):
     
     id = models.AutoField(primary_key=True)

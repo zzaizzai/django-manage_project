@@ -2,7 +2,7 @@ from typing import Any
 from django import http
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
+from .models import CustomUser
 from django.db import connection
 from django.contrib import messages
 from django.views.generic.base import TemplateView
@@ -10,7 +10,7 @@ from .forms import RegisterUserForm
 # Create your views here.
 
 def all_users_list(request):
-    users = User.objects.all().order_by('id')
+    users = CustomUser.objects.all().order_by('id')
     return render(request, 'all_users_list.html', {"users": users})
     
 def account_login(request):
@@ -51,9 +51,16 @@ def account_logout(request):
     return redirect('account_login')
 
 
-def mypage(request):
-    
-    return render(request, 'mypage.html')
+class MyPage(TemplateView):
+    template_name = 'mypage.html'
+    def get(self, request, *args: Any, **kwargs: Any):
+        context = self.get_context_data()
+        
+        user = request.user
+        
+        context['user'] = CustomUser.objects.get(id=user.id)
+        
+        return render(request, self.template_name, context)
 
 
 class DetailUser(TemplateView):
@@ -65,7 +72,7 @@ class DetailUser(TemplateView):
         user_id = self.kwargs['pk']
         
         try:
-            context['user'] = User.objects.get(id=user_id)
+            context['user'] = CustomUser.objects.get(id=user_id)
         except:
             return redirect('all_users_list')
         

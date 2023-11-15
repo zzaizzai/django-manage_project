@@ -3,15 +3,43 @@
 {% block body %}
 
 
+<style>
+
+.card {
+    border-radius: 15px;
+}
+
+.card-header.horizontal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-title {
+    color: #007bff; /* 제목의 텍스트 색상을 원하는 색상으로 설정 */
+}
+
+.card-text {
+    margin-bottom: 10px;
+}
+
+</style>
+
 <div class="container mt-5">
-    <div class="card">
-        <div class="card-header">
-            <h2 class="text-center">Detail Information</h2>
+    <div class="card border-0 shadow">
+        <div class="card-header horizontal bg-primary text-white">
+            <h2 class="text-left m-0">Detail Information</h2> 
+            <a class="button btn btn-light" href="{% url 'edit_project' project.id %}">Edit</a>
         </div>
         <div class="card-body">
-            <h4 class="card-title">{{ project.title }}</h4>
-            <p class="card-text">{{ project.text }}</p>
-            <p class="card-text"><strong>Author:</strong> {{ project.get_created_user_info.username }}</p>
+            <div class="card-text">
+                <strong><a class="link" href="{% url 'detail_account' project.get_created_user_info.id %}">{{ project.get_created_user_info.username }}</a></strong> 
+                <br>
+                <br>
+                <h4 class="card-title">{{ project.title }}</h4>
+                <div class="card-text">{{ project.text }}</div>
+                <div class="card-text">{{ project.show_time_created_with_updated }}</div>
+            </div>
         </div>
     </div>
 </div>
