@@ -41,21 +41,21 @@ class Project(models.Model):
         try:
             user = CustomUser.objects.get(id=self.user_created_id)
             return user
-        except User.DoesNotExist:
+        except CustomUser.DoesNotExist:
             return None
     
     def get_completed_user_info(self):
         try:
             user = CustomUser.objects.get(id=self.user_completed_id)
             return user
-        except User.DoesNotExist:
+        except CustomUser.DoesNotExist:
             return None
         
     def get_user_info(self, user_id: int):
         try:
             user = CustomUser.objects.get(id=user_id)
             return user
-        except User.DoesNotExist:
+        except CustomUser.DoesNotExist:
             return None
 
     def get_time_ago(self) -> str:
