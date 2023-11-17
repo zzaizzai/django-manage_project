@@ -65,6 +65,12 @@ body {
   background-color: #e67e22;
 }
 
+.button.white {
+  color: black;
+  background-color: #ffffff;
+}
+
+
 .button.purple {
   color: #fff;
   background-color: #9b59b6;

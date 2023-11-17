@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 
 from accounts.models import CustomUser
-from .models import Project, ProjectMemeber
+from .models import Project, ProjectMemeber, ProjectComment
 
 
 def project_index(request):
@@ -42,7 +42,18 @@ class DetailProject(TemplateView):
         project_id = self.kwargs['pk']
         context['project'] = Project.objects.get(id=project_id)
         return render(request, self.template_name, context)
-
+    
+    # Create Comment
+    def post(self, request, *args, **kwargs):
+        project_id = self.kwargs['pk']
+        comment_text = request.POST.get('comment-text')
+        try:
+            ProjectComment.create_comment(request.user.id, project_id, comment_text)
+            messages.success(request, "added a comment")
+        except:
+            messages.warning(request, "failed to save comment")
+        return redirect(reverse('detail_project', kwargs={"pk": project_id}))
+    
 class AddProjectMember(TemplateView):
     template_name = 'add_project_member.html'
     

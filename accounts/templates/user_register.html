@@ -11,12 +11,13 @@
         <h4>Register Page</h4>
         <br>
         <br>
-        <form action="{% url 'account_register'  %}" method="POST">
+        <form action="{% url 'user_register'  %}" method="POST">
             {% csrf_token %}
             {{form.as_p}}
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
+    <a href="{% url 'user_login' %}">Back to Login page</a>
 
 
 {% endblock %}

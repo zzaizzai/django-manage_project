@@ -23,27 +23,65 @@
     margin-bottom: 10px;
 }
 
+.muted {
+    font-size: 80%; /* 작은 글꼴 크기 조절 */
+    color: rgba(0, 0, 0, 0.5); /* 흐린 색상 조절 */
+    align-self: flex-end;
+}
 </style>
 
 <div class="container mt-5">
     <div class="card border-0 shadow">
         <div class="card-header horizontal bg-primary text-white">
             <h2 class="text-left m-0">Detail Information</h2> 
-            <a class="button btn btn-light" href="{% url 'edit_project' project.id %}">Edit</a>
+            <div class="spacer"></div>
+            <a class="button btn btn-light mr-3" href="{% url 'edit_project' project.id %}">Edit</a>
             <a class="button btn btn-light" href="{% url 'add_project_member' project.id %}">Add Member</a>
         </div>
         <div class="card-body">
             <div class="card-text">
-                <strong>Created by <a class="link" href="{% url 'detail_account' project.get_created_user_info.id %}">{{ project.get_created_user_info.username }}</a></strong> 
+                <strong>Created by <a class="link" href="{% url 'detail_user' project.get_created_user_info.id %}">{{ project.get_created_user_info.username }}</a></strong> 
                 <br>
                 Members: {% for member in project.get_members %}
-                    <a class="link" href="{% url 'detail_account' member.get_user_info.id %}">{{ member.get_user_info }}</a>
+                    <a class="link" href="{% url 'detail_user' member.get_user_info.id %}">{{ member.get_user_info }}</a>
                 {% endfor %}
                 <br>
                 <br>
                 <h4 class="card-title">{{ project.title }}</h4>
                 <div class="card-text">{{ project.text }}</div>
                 <div class="card-text">{{ project.show_time_created_with_updated }}</div>
+
+
+
+                <!-- Comments Section -->
+                <div class="comments mt-4">
+                    <h5>Comments</h5>
+                    <ul class="list-unstyled">
+                        <!-- Add comments dynamically -->
+                        <li class="mb-2">
+                            <strong>demo username:</strong> demotext
+                        </li>
+                        {% for comment in project.get_comments %}
+                            <li class="mb-2 horizontal">
+                                <a class="link" href="{% url 'detail_user' comment.get_created_user_info.id %}"><strong class="mr-1">{{ comment.get_created_user_info.username }}</strong> </a>: 
+                                <div class="mr-3">{{ comment.text }}</div>
+                                <div class="muted">{{comment.show_time_created_ago}}</div>
+                            </li>
+                        {% endfor %}
+
+                    </ul>
+                </div>
+
+                <!-- Comment Input Form -->
+                <form method="post" action="{% url 'detail_project' project.id %}">
+                    {% csrf_token %}
+                    <div class="form-group mt-3">
+                        <label for="comment-text">Add a comment:</label>
+                        <textarea class="form-control" id="comment-text" name="comment-text" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Comment</button>
+                </form>
+
             </div>
         </div>
     </div>

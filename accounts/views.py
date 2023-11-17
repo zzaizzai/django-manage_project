@@ -13,7 +13,7 @@ def all_users_list(request):
     users = CustomUser.objects.all().order_by('id')
     return render(request, 'all_users_list.html', {"users": users})
     
-def account_login(request):
+def user_login(request):
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['password']
@@ -27,28 +27,28 @@ def account_login(request):
             messages.success(request, ("bad login method"))
             
             return redirect('/members/login_user')
-    return render(request, 'account_login.html')
+    return render(request, 'user_login.html')
 
-def account_register(request):
+def user_register(request):
     if request.method == "POST":
         form = RegisterUserForm(request.POST)
         if form.is_valid():
             user = form.save()
             login(request, user)
             messages.success(request, "Registration successful.")
-            return redirect("account_login")
+            return redirect("user_login")
         messages.error(
             request, "Unsuccessful registration. Invalid information.")
 
     form = RegisterUserForm()
-    return render(request, 'account_register.html', {"form": form})
+    return render(request, 'user_register.html', {"form": form})
 
 
 def account_logout(request):
     logout(request)
     messages.success(request, ("logged out"))
 
-    return redirect('account_login')
+    return redirect('user_login')
 
 
 class MyPage(TemplateView):
@@ -64,7 +64,7 @@ class MyPage(TemplateView):
 
 
 class DetailUser(TemplateView):
-    template_name = 'detail_account.html'
+    template_name = 'detail_user.html'
     
     def get(self, request, *args: Any, **kwargs: Any):
         

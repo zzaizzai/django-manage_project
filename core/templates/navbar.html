@@ -31,13 +31,13 @@
             <div class="menu">
                 <div>{{user.username}}</div>
                 <div class="hidden-menu">
-                    <a class="nav-item" href="{% url 'detail_account' user.id %}">My Page</a>
+                    <a class="nav-item" href="{% url 'detail_user' user.id %}">My Page</a>
                     <a class="nav-item" href="{% url 'account_logout' %}">log out</a>
                     <!-- 원하는 만큼 서브 메뉴 추가 -->
                 </div>
             </div>
         {% else %}
-            <a class="nav-item" href="{% url 'account_login' %}">login</a>
+            <a class="nav-item" href="{% url 'user_login' %}">login</a>
         {% endif %}
     </div>
 </div>
