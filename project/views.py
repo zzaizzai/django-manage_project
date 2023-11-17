@@ -45,6 +45,15 @@ class DetailProject(TemplateView):
         context['project'] = Project.objects.get(id=project_id)
         return render(request, self.template_name, context)
 
+class AddProjectMember(TemplateView):
+    template_name = 'add_project_member.html'
+    
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        context = self.get_context_data()
+        project_id = kwargs['project_id']
+        context['project'] = Project.objects.get(id=project_id)
+        
+        return render(request, self.template_name, context)
 
 class AddProject(TemplateView):
     template_name = 'add_project.html'

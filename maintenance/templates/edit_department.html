@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<style>
+
+</style>
+<h3>Department</h3>
+
+<h1>Department List</h1>
+
+<form action="{% url 'edit_department' %}" method="post">
+    {% csrf_token %}
+    <div class="vertical">
+        {% for department in departments %}
+        <div class="horizontal my-2">
+            <div class="spacer"></div>
+            <div class="mx-2">{{department.id}}.</div>
+        <input class="mx-2" type="text" name="name_{{ department.id }}" value="{{ department.name }}">
+        <div class="spacer"></div>
+
+        </div>
+        {% endfor %}
+        <div class="horizontal my-3">
+            <div class="spacer"></div>
+            <button class="button red" type="submit">Update</button>
+            <div class="spacer"></div>
+        </div>
+    </div>
+
+</form>
+
+<script>
+
+    // If checnged value, display font red
+    document.addEventListener("DOMContentLoaded", function () {
+        var inputs = document.querySelectorAll('input[name^="name_"]');
+        
+        inputs.forEach(function (input) {
+            // save init value
+            input.setAttribute('data-initial-value', input.value);
+            
+            // check changed value
+            input.addEventListener('input', function () {
+                if (input.value !== input.getAttribute('data-initial-value')) {
+                    input.classList.add('changed');
+                } else {
+                    input.classList.remove('changed');
+                }
+            });
+        });
+    });
+</script>
+
+<style>
+    /* 변경된 값에 대한 스타일 추가 */
+    .changed {
+        color: red;
+        /* font-weight: bold; */
+    }
+</style>
+
+{% endblock %}
+

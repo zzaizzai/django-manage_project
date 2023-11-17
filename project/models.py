@@ -2,6 +2,7 @@ from django.db import models
 from accounts.models import CustomUser
 from django.utils import timezone
 from datetime import timedelta
+from typing import Union, Any, List
 # Create your models here.
 
 
@@ -32,26 +33,25 @@ class Project(models.Model):
     
     
     def show_time_created_with_updated(self) -> str:
-        if self.formatted_datetime_updated is None:
-            return "Posted at " + self.formatted_datetime_created
-        else:
-            return f"Posted at {self.formatted_datetime_created()} (Last updated at {self.formatted_datetime_updated()})"
+        if self.formatted_datetime_updated() is None:
+            return "Posted at " + self.formatted_datetime_created()
+        return f"Posted at {self.formatted_datetime_created()} (Last updated at {self.formatted_datetime_updated()})"
 
-    def get_created_user_info(self):
+    def get_created_user_info(self) -> CustomUser:
         try:
             user = CustomUser.objects.get(id=self.user_created_id)
             return user
         except CustomUser.DoesNotExist:
             return None
     
-    def get_completed_user_info(self):
+    def get_completed_user_info(self) -> CustomUser:
         try:
             user = CustomUser.objects.get(id=self.user_completed_id)
             return user
         except CustomUser.DoesNotExist:
             return None
         
-    def get_user_info(self, user_id: int):
+    def get_user_info(self, user_id: int) -> CustomUser:
         try:
             user = CustomUser.objects.get(id=user_id)
             return user
@@ -63,48 +63,54 @@ class Project(models.Model):
         time_difference = current_time - self.datetime_created
 
         if time_difference < timedelta(minutes=1):
-            # 1분 이내
+            # under 1min
             return '1 min ago'
         elif time_difference < timedelta(hours=1):
-            # 1시간 이내
+            # under 1hour
             minutes = int(time_difference.seconds / 60)
             return f'{minutes} mins ago'
         elif time_difference < timedelta(days=1):
-            # 24시간 이내
+            # under 24hours
             hours = int(time_difference.seconds / 3600)
             if hours == 1:
                 return '1 hour ago'
             else:
                 return f'{hours} hours ago'
         else:
-            # 24시간 이상
+            # over 24hours
             days = time_difference.days
             if days == 1:
                 return '1 day ago'
             else:
                 return f'{days} days ago'
 
-
     def formatted_datetime_created(self) -> str:
-        return self.datetime_created.strftime("%Y-%m-%d %H:%M")
+        return self.datetime_created.strftime("%Y-%m-%d %H:%M") or ""
 
-
-    def formatted_datetime_updated(self) -> str:
+    def formatted_datetime_updated(self) -> Union[str, None]:
+        if self.datetime_created == self.datetime_updated:
+            return None
         return self.datetime_created.strftime("%Y-%m-%d %H:%M") or None
 
     def formatted_datetime_due(self) -> str:
         if self.date_due:
             return self.date_due.strftime("%Y-%m-%d")
-        else:
-            return "No due date"
+        return "No due date"
+    
+    def get_members(self) -> List['ProjectMemeber'] :
+        members = ProjectMemeber.objects.filter(project_id = self.id)
+        return list(members)
         
 class ProjectMemeber(models.Model):
     
     id = models.AutoField(primary_key=True)
-        
+    
     project_id = models.IntegerField()
     user_id = models.IntegerField()
     is_manager = models.BooleanField(default=False)
     
     class Meta:
         db_table = "project_member"
+        
+    def get_user_info(self):
+        return CustomUser.objects.get(self.user_id)

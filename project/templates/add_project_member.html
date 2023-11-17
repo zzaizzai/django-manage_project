@@ -1,0 +1,20 @@
+{% extends "base.html" %} {% block body %}
+
+<p>This is project Add page.</p>
+
+<div class="container mt-5">
+  <form action="{% url 'add_project_member' 1 %}" method="POST">
+    {% csrf_token %}
+    <div class="mb-3">
+        <div class="horizontal">
+            <div class="spacer"></div>
+            <input type="number" class="form-control" name="user_id"  id="user_id" required>
+            <input type="checkbox" class="form-control" name="is_maneger"  id="is_maneger" >
+            <div class="spacer"></div>
+        </div>
+    </div>
+    <button type="submit" class="button blue">Done</button>
+  </form>
+</div>
+
+{% endblock %}
