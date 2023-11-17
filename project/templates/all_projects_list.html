@@ -27,20 +27,20 @@ th.col-3 {
 
 
 <div class="container mt-5">
-    <table class="table table-bordered table-hover">
+    <table class="table-hover">
         <thead>
             <tr>
-                <th class="col-1">ID</th>
-                <th class="col-4">Title</th>
-                <th class="col-2">Username</th>
-                <th class="col-3">Created</th>
+                <th class="col-1 p-0">UID</th>
+                <th class="col-4 p-0">Title</th>
+                <th class="col-2 p-0">Username</th>
+                <th class="col-3 p-0">Created</th>
             </tr>
         </thead>
         <tbody>
             {% for project in projects %}
-                <tr>
+                <tr class="status {{project.get_status_color}}">
                     <td>{{ project.id }}</td>
-                    <td><a class="link shorten-title" href="{% url 'detail_project' project.id %}">{{ project.title }}</a></td>
+                    <td><a class="link shorten-title status {{project.get_status_color}}" href="{% url 'detail_project' project.id %}">{{ project.title }}</a></td>
                     <td>{{ project.get_created_user_info.username }}</td>
                     <td>{{ project.get_time_ago }}</td>
                 </tr>

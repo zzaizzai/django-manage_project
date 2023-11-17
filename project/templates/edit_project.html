@@ -16,7 +16,20 @@
       <div class="mb-3">
         <label for="text" class="form-label">Text</label>
         <textarea class="form-control" name="text" id="text" rows="5" required>{{ project.text }}</textarea>
+        
       </div>
+
+      <div>
+        
+        <label for="checkbox">completed: </label>
+        <input type="checkbox" {% if project.is_completed %}checked{% endif %} value="True"  name="is_completed" id="is_completed">
+        <br>
+        <label for="checkbox">cancle: </label>
+        <input type="checkbox" {% if project.is_cancled %}checked{% endif %} value="True"  name="is_cancled" name="is_cancled">
+      </div>
+      
+      
+
       <button type="submit" class="button blue">Edit</button>
     </form>
   </div>

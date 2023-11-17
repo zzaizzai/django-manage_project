@@ -1,12 +1,15 @@
 from datetime import datetime
 from typing import Any
+
 from django import http
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect, reverse
 from django.views.generic.base import TemplateView
-from .models import Project
 from django.contrib.auth.models import User
 from django.contrib import messages
+
+from accounts.models import CustomUser
+from .models import Project, ProjectMemeber
 
 
 def project_index(request):
@@ -26,13 +29,8 @@ class AllProjectsList(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
 
-        all_projects = Project.objects.all().order_by('-id')
+        context['projects'] = Project.objects.all().order_by('-id')
 
-        for project in all_projects:
-            project.user_created = project.get_user_info(
-                project.user_created_id)
-
-        context['projects'] = all_projects
         return render(request, self.template_name, context)
 
 
@@ -50,11 +48,38 @@ class AddProjectMember(TemplateView):
     
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         context = self.get_context_data()
-        project_id = kwargs['project_id']
+        
+        project_id = self.kwargs['pk']
         context['project'] = Project.objects.get(id=project_id)
+        context['users'] = CustomUser.objects.all().order_by('id')
         
         return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        context['user_id'] = request.POST.get('user_id')
+        context['project_id'] = self.kwargs['pk']
+        
+        try:
+            project_member = ProjectMemeber.objects.get(user_id = context['user_id'], project_id = context['project_id'])
+        except ProjectMemeber.DoesNotExist:
+            project_member = None
+            
+        if project_member is not None:
+            messages.warning(request , "user is already member")
+            return redirect(reverse('detail_project', kwargs={"pk": context['project_id']}))
+        
+        try:
+            user = CustomUser.objects.get(id=context['user_id'])
+            new_project_memeber = ProjectMemeber(user_id=user.id, project_id = context['project_id'])
+            new_project_memeber.save()
+            messages.success(request, "done!")
+        except:
+            messages.warning(request, "failed to add member")
+            
+        return redirect(reverse('detail_project', kwargs={"pk": context['project_id']}))
 
+        
 class AddProject(TemplateView):
     template_name = 'add_project.html'
 
@@ -112,17 +137,23 @@ class EditProject(TemplateView):
 
         context['title'] = request.POST.get('title')
         context['text'] = request.POST.get('text')
+        context['is_completed'] = request.POST.get('is_completed', False) 
+        context['is_cancled'] = request.POST.get('is_cancled', False) 
+        
         update_proejct = Project.objects.get(id=project_id)
 
         update_proejct.title = context['title']
         update_proejct.text = context['text']
+        update_proejct.is_completed = context['is_completed']
+        update_proejct.is_cancled = context['is_cancled']
         update_proejct.datetime_updated= datetime.now()
-
+        print(context['is_completed'])
+        print(context['is_cancled'])
         try:
             update_proejct.save()
             messages.success(request, "completely updated")
         except:
-            messages.warning('failed to update')
+            messages.warning( request, 'failed to update')
             return render(request, self.template_name, context)
 
         return redirect(reverse('detail_project', kwargs={"pk": project_id}))

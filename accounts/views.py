@@ -71,8 +71,12 @@ class DetailUser(TemplateView):
         context = super().get_context_data()
         user_id = self.kwargs['pk']
         
+        
         try:
-            context['user'] = CustomUser.objects.get(id=user_id)
+            user = CustomUser.objects.get(id=user_id)
+            print(user)
+            
+            context['user'] = user
         except:
             return redirect('all_users_list')
         

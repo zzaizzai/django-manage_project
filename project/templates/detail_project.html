@@ -34,7 +34,11 @@
         </div>
         <div class="card-body">
             <div class="card-text">
-                <strong><a class="link" href="{% url 'detail_account' project.get_created_user_info.id %}">{{ project.get_created_user_info.username }}</a></strong> 
+                <strong>Created by <a class="link" href="{% url 'detail_account' project.get_created_user_info.id %}">{{ project.get_created_user_info.username }}</a></strong> 
+                <br>
+                Members: {% for member in project.get_members %}
+                    <a class="link" href="{% url 'detail_account' member.get_user_info.id %}">{{ member.get_user_info }}</a>
+                {% endfor %}
                 <br>
                 <br>
                 <h4 class="card-title">{{ project.title }}</h4>

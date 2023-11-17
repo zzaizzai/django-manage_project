@@ -1,6 +1,8 @@
+from typing import List
 from django.contrib.auth.models import User, AbstractUser
 from django.db import models
 from maintenance.models import MasterDepartment
+
 
 class CustomUser(AbstractUser):
 
@@ -13,5 +15,34 @@ class CustomUser(AbstractUser):
     def get_department_info(self):
         return MasterDepartment.objects.get(id=self.department_id) or "no department name"
     
-    
+    def get_projects(self):
+        from project.models import ProjectMemeber
+        
+        user_memeber_list = list(ProjectMemeber.objects.filter(user_id = self.id))
+        projects = [user_member.get_project_info() for user_member in user_memeber_list]
+            
+        return  projects
 
+    def get_number_projects_completed(self) -> int:
+        projects = self.get_projects()
+        count_completed = 0
+        
+        for project in projects:
+            if project.is_completed is True and project.is_cancled is False:
+                count_completed += 1
+        
+        return count_completed
+    
+    def get_number_projects_cancled(self) -> int:
+        projects = self.get_projects()
+        count_cancled = 0
+        
+        for project in projects:
+            if project.is_cancled is True:
+                count_cancled += 1
+        
+        return count_cancled
+    
+    def get_number_projects(self) -> int:
+        return  len(self.get_projects())
+    

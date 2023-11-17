@@ -101,6 +101,17 @@ class Project(models.Model):
         members = ProjectMemeber.objects.filter(project_id = self.id)
         return list(members)
         
+        
+    def get_status_color(self) -> str:
+        
+        if self.is_cancled is True :
+            return 'gray'
+        
+        if self.is_completed is True :
+            return 'blue'
+        
+        return 'black'
+        
 class ProjectMemeber(models.Model):
     
     id = models.AutoField(primary_key=True)
@@ -112,5 +123,8 @@ class ProjectMemeber(models.Model):
     class Meta:
         db_table = "project_member"
         
+    def get_project_info(self) -> Project:
+        return Project.objects.get(id=self.project_id)
+        
     def get_user_info(self):
-        return CustomUser.objects.get(self.user_id)
+        return CustomUser.objects.get(id=self.user_id)
