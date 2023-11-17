@@ -5,6 +5,8 @@
 <p>This is project Edit page.</p>
 
 
+
+
 <div class="container mt-5">
     <form action="" method="POST">
       {% csrf_token %}
@@ -20,12 +22,16 @@
       </div>
 
       <div>
-        
-        <label for="checkbox">completed: </label>
-        <input type="checkbox" {% if project.is_completed %}checked{% endif %} value="True"  name="is_completed" id="is_completed">
-        <br>
-        <label for="checkbox">cancle: </label>
-        <input type="checkbox" {% if project.is_cancled %}checked{% endif %} value="True"  name="is_cancled" name="is_cancled">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" {% if project.is_completed %}checked{% endif %} value="True"  name="is_completed" id="is_completed">
+          <label class="form-check-label" for="is_completed">completed</label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" {% if project.is_cancled %}checked{% endif %} value="True"  name="is_cancled" id="is_cancled">
+          <label class="form-check-label" for="is_cancled">cancled</label>
+        </div>
+          <br>
+
       </div>
       
       

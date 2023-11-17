@@ -7,6 +7,16 @@ from maintenance.models import MasterDepartment
 from django.contrib import messages
 # Create your views here.
 
+class Index(TemplateView):
+    template_name='index_maintenance.html'
+    
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        context = self.get_context_data()
+        
+        return render(request, self.template_name, context)
+    
+    
+
 class AddDepartment(TemplateView):
     
     template_name = 'add_department.html'

@@ -1,10 +1,28 @@
 
+<style>
+
+.nav-item {
+    transition: color 0.1s; 
+}
+.nav-item{
+    font-weight: bold;
+    color: #eeeeeebb;
+}
+.nav-item:hover {
+    text-decoration: none;
+    color: #ffffff; /* bold 색상 지정 */
+}
+
+
+</style>
+
 <div class="navbar horizontal">
 
     <div >
         <a class="nav-item" href="{% url 'core_index' %}">index</a>
         <a class="nav-item" href="{% url 'project_index' %}">project</a>
-        <a class="nav-item" href="{% url 'edit_department' %}">department</a>
+        <a class="nav-item" href="{% url 'all_user_list' %}">users</a>
+        <a class="nav-item" href="{% url 'index_maintenance' %}">maintenance</a>
 
     </div>
 

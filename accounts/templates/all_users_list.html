@@ -2,12 +2,17 @@
 
 {% block body %}
 
+
+<h3>users list page</h3>
+
+<ul>
 {% if users %}
     {% for user in users %}
-        {{user}}
+        <li><a class="link" href="{% url 'detail_account' user.id  %}">{{user.id}}. {{user.username}}</a></li>
     {% endfor %}
 {% endif %}
-<h3>users list page</h3>
+</ul>
+
 
 
 {% endblock %}
