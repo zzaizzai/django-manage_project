@@ -40,7 +40,7 @@ class PostBaseModel(models.Model):
     def formatted_datetime_updated(self) -> Union[str, None]:
         if self.datetime_created == self.datetime_updated or self.datetime_updated is None:
             return None
-        return self.datetime_created.strftime("%Y-%m-%d %H:%M") or None
+        return self.datetime_updated.strftime("%Y-%m-%d %H:%M") or None
 
     def show_time_created_ago(self):
         return self.formatted_time_ago(self.datetime_created)
@@ -98,19 +98,39 @@ class Project(PostBaseModel):
     def get_completed_user_info(self) -> Optional[CustomUser]:
         self.get_user_info_with_id(self.user_completed_id)
         
+    def show_number_comments(self) -> str:
+        return f'[{self.get_number_comments()}]'
+        
+    def get_number_comments(self) -> int:
+        return len(self.get_comments())
+        
     def get_comments(self) -> List['ProjectComment']:
         comments = ProjectComment.objects.filter(project_id=self.id).order_by('datetime_created')
         return list(comments)
             
     def formatted_datetime_due(self) -> str:
         if self.date_due:
-            return self.date_due.strftime("%Y-%m-%d")
+            date_due = self.date_due.strftime("%Y-%m-%d")
+            return f'Due by {date_due}'
         return "No due date"
     
-    def get_members(self) -> List['ProjectMemeber'] :
+    def show_time_duedate(self) -> str:
+        return self.formatted_datetime_due()
+    
+    def get_members(self) -> List['ProjectMemeber']:
         members = ProjectMemeber.objects.filter(project_id = self.id)
         return list(members)
         
+    def get_members_not_manager(self) -> List['ProjectMemeber']:
+        all_members = self.get_members()
+        members_not_manager = [member for member in all_members if not member.is_manager]
+        return members_not_manager
+        
+    def get_members_is_manager(self) -> List['ProjectMemeber']:
+        all_members = self.get_members()
+        members_is_manager = [member for member in all_members if member.is_manager]
+        return members_is_manager
+    
     def get_status_color(self) -> str:
         if self.is_cancled is True :
             return 'gray'
@@ -133,7 +153,6 @@ class ProjectComment(PostBaseModel):
     
     class Meta:
         db_table = "project_comment"
-    
     
     @classmethod
     def create_comment(cls, user_id: int, project_id: int, text: str) -> 'ProjectComment':

@@ -18,7 +18,11 @@
       <div class="mb-3">
         <label for="text" class="form-label">Text</label>
         <textarea class="form-control" name="text" id="text" rows="5" required>{{ project.text }}</textarea>
-        
+      </div>
+
+      <div class="mb-3">
+        <label for="date" class="form-label">Date</label>
+        <input type="date" name="date_due" id="date_due"  placeholder="YYYY-MM-DD" value="{{ project.date_due|date:'Y-m-d' }}"">
       </div>
 
       <div>

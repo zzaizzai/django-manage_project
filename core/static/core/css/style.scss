@@ -1,5 +1,26 @@
+// Variables
+$blue-color: #3498db;
+$green-color: #2ecc71;
+$orange-color: #e67e22;
+$red-color: #e74c3c;
+$info-color: #3498db;
+$nav-color: #333;
+$white-color: #fff;
+$black-color: #000;
+$gray-color: #eee;
+$nav-highlight-color: rgba(0, 0, 0, 0.822);
+$nav-font-color: white;
+
 body {
-  background-color: #eee;
+  background-color: $gray-color;
+}
+
+a {
+  text-decoration: none !important;
+}
+
+.cursor-none {
+  cursor: default;
 }
 
 .vertical {
@@ -15,19 +36,20 @@ body {
   flex-grow: 1;
 }
 
-.nav-item {
-  margin: 0 10px;
-  text-decoration: none;
-  color: white;
-}
+.navbar .nav-link {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-size: 18px;
+  color: #ffffffd3 !important;
+  font-weight: bold;
+  border-radius: 10px;
 
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #333;
-  padding: 10px;
-  color: white;
+  &:hover {
+    color: $nav-font-color !important;
+    transition: 0.5s;
+    background-color: $nav-highlight-color;
+
+  }
 }
 
 /* 기본 버튼 스타일 */
@@ -37,54 +59,56 @@ body {
   font-size: 16px;
   font-weight: bold;
   text-align: center;
-  text-decoration: none;
+  text-decoration: none !important;
   cursor: pointer;
   border: 2px solid transparent;
   border-radius: 5px;
-  transition: color 0.3s, border-color 0.3s, background-color 0.3s;
+  transition: 0.5s;
   position: relative;
 
   /* 색상 설정 */
   &.blue {
-    color: #fff;
-    background-color: #3498db;
+    color: $white-color;
+    background-color: $blue-color;
   }
 
   &.green {
-    color: #fff;
-    background-color: #2ecc71;
+    color: $white-color;
+    background-color: $green-color;
   }
 
   &.orange {
-    color: #fff;
-    background-color: #e67e22;
+    color: $white-color;
+    background-color: $orange-color;
   }
 
   &.purple {
-    color: #fff;
-    background-color: #9b59b6;
+    color: $white-color;
+    background-color: $red-color;
   }
 
   &.red {
-    color: #fff;
-    background-color: #e74c3c;
+    color: $white-color;
+    background-color: $info-color;
   }
 
   &.yellow {
-    color: #fff;
-    background-color: #f1c40f;
+    color: $white-color;
+    background-color: $nav-color;
   }
 
   /* 호버 효과 */
   &:hover {
     border-color: rgba(0, 0, 0, 0.5);
     color: rgba(255, 255, 255, 0.8);
+    filter: brightness(0.9); 
   }
+
 }
 
 /* 기본 스타일 */
 .link {
-  color: black; /* 검정색 */
+  color: $black-color; /* 검정색 */
   text-decoration: none; /* 밑줄 제거 */
   transition: box-shadow 0.3s ease-in; /* 호버 시 새도우 효과에 대한 전환 효과 */
   border-radius: 8px; /* 둥글게 만들기 위해 border-radius 속성 추가 */
@@ -93,71 +117,29 @@ body {
 
   /* 호버 및 포커스 스타일 */
   &:hover {
-    color: black; /* 검정색 */
+    color: $black-color; /* 검정색 */
     box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.5); /* 새도우 효과, spread 값 조절 */
   }
 }
 
-.menu {
-  position: relative;
-  color: #fff;
-  cursor: pointer; /* 커서 모양을 포인터로 변경하여 클릭 가능한 것처럼 보이게 함 */
-
-  /* 숨겨진 메뉴 스타일 */
-  .hidden-menu {
-    display: none;
-    position: absolute;
-    top: 100%; /* 부모 요소 아래에 표시되도록 설정 */
-    right: 0;
-    background-color: #2980b9;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    padding: 10px;
-    min-width: 150px; /* 원하는 폭으로 조절 */
-    opacity: 0;
-    transform: translateY(-20px);
-    animation: slideIn 0.3s ease-in-out;
-    z-index: 1;
-
-    /* 호버 시 메뉴 표시 */
-    &:hover {
-      display: block;
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    /* 메뉴 아이템 스타일 */
-    a {
-      display: block;
-      color: #fff;
-      text-decoration: none;
-      padding: 4px 0;
-      transition: background-color 0.3s;
-
-      &:hover {
-        color: #fff;
-      }
-    }
-  }
-
-  /* @keyframes를 사용하여 애니메이션 정의 */
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateY(-20px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-}
+//   /* @keyframes를 사용하여 애니메이션 정의 */
+//   @keyframes slideIn {
+//     from {
+//       opacity: 0;
+//       transform: translateY(-20px);
+//     }
+//     to {
+//       opacity: 1;
+//       transform: translateY(0);
+//     }
+//   }
+// }
 
 .shorten-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 500px; /* 최대 길이 설정 */
+  max-width: 800px; /* 최대 길이 설정 */
 }
 
 /* 상태에 따른 스타일 */
@@ -167,7 +149,7 @@ body {
   }
 
   &.black {
-    color: black;
+    color: $black-color;
   }
 
   &.red {
@@ -179,19 +161,19 @@ body {
   }
 }
 
-.nav-item {
-  transition: color 0.1s;
+// .nav-item {
+//   transition: color 0.1s;
 
-  /* Extend mixin */
-  @extend .menu-font;
+//   /* Extend mixin */
+//   @extend .menu-font;
 
-  &:hover {
-    text-decoration: none;
-    color: #ffffff; /* bold 색상 지정 */
-  }
-}
+//   &:hover {
+//     text-decoration: none;
+//     color: $white-color; /* bold 색상 지정 */
+//   }
+// }
 
-.menu-font {
-  font-weight: bold;
-  color: #eeeeeebb;
-}
+// .menu-font {
+//   font-weight: bold;
+//   color: rgba($white-color, 0.75);
+// }

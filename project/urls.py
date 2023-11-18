@@ -10,5 +10,6 @@ urlpatterns = [
     path('detail/<int:pk>', DetailProject.as_view(), name='detail_project'),
     path('edit/<int:pk>', EditProject.as_view(), name='edit_project'),
     path('add_project_member/<int:pk>', AddProjectMember.as_view(), name='add_project_member'),
+    path('edit_project_member/<int:pk>', EditProjectMember.as_view(), name='edit_project_member'),
     
 ]

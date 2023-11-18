@@ -32,15 +32,23 @@
 
 <div class="container mt-5">
     <div class="card border-0 shadow">
+
+        <!-- Title -->
         <div class="card-header horizontal bg-primary text-white">
-            <h2 class="text-left m-0">Detail Information</h2> 
+            <h2 class="text-left m-0">Project Information</h2> 
             <div class="spacer"></div>
             <a class="button btn btn-light mr-3" href="{% url 'edit_project' project.id %}">Edit</a>
-            <a class="button btn btn-light" href="{% url 'add_project_member' project.id %}">Add Member</a>
+            <a class="button btn btn-light" href="{% url 'edit_project_member' project.id %}">Member</a>
         </div>
+
+        <!-- Body -->
         <div class="card-body">
             <div class="card-text">
                 <strong>Created by <a class="link" href="{% url 'detail_user' project.get_created_user_info.id %}">{{ project.get_created_user_info.username }}</a></strong> 
+                <br>
+                Manager: {% for member in project.get_members_is_manager %}
+                <a class="link" href="{% url 'detail_user' member.get_user_info.id %}">{{ member.get_user_info }}</a>
+                {% endfor %}
                 <br>
                 Members: {% for member in project.get_members %}
                     <a class="link" href="{% url 'detail_user' member.get_user_info.id %}">{{ member.get_user_info }}</a>
@@ -49,7 +57,8 @@
                 <br>
                 <h4 class="card-title">{{ project.title }}</h4>
                 <div class="card-text">{{ project.text }}</div>
-                <div class="card-text">{{ project.show_time_created_with_updated }}</div>
+                <div class="card-text mb-0">{{ project.show_time_created_with_updated }}</div>
+                <div class="card-text mb-0">{{ project.show_time_duedate }}</div>
 
 
 

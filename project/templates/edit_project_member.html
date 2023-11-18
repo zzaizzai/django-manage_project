@@ -1,0 +1,52 @@
+{% extends "base.html" %} {% block body %}
+
+<p>This is Project Member Edit Page.</p>
+
+
+<div class="container vertical">
+
+  <h3>Select Manager</h3>
+  <form  action="{% url 'edit_project_member'  project.id %}" method="post">
+    {% csrf_token %}
+  
+    </select>
+    {% for member in project.get_members %}
+    <div class="form-check">
+      <input class="form-check-input" type="checkbox" {% if member.is_manager %}checked{% endif %} value="True"  
+        name="manager_{{member.user_id}}" id="manager_{{member.user_id}}">
+        
+      <label class="form-check-label" for="manager_{{member.user_id}}"> {{member.get_user_info.username}}</label>
+    </div>
+    {% endfor %}
+  
+  
+    <button type="submit">Edit Manager</button>
+  </form>
+  
+  <br>
+  <br>
+  
+  <h3>Add New Member</h3>
+  <form  action="{% url 'add_project_member'  project.id %}" method="post">
+    {% csrf_token %}
+
+    <div class="vertical">
+      <div class="horizontal">
+        <label for="user_id">Select a user:</label>
+        <select name="user_id" id="user_id">
+          {% for user in users %}
+            <option value="{{ user.id }}">{{ user.id }} - {{ user.username }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="horizontal">
+        <button type="submit">Add Member</button>
+        <br>
+        <div class="spacer"></div>
+      </div>
+    </div>
+  </form>
+
+</div>
+{% endblock %}

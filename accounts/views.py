@@ -25,9 +25,9 @@ def user_login(request):
             return redirect('/')
 
         else:
-            messages.success(request, ("bad login method"))
+            messages.warning(request, ("bad login method"))
             
-            return redirect('/members/login_user')
+            return redirect('/account/login')
     return render(request, 'user_login.html')
 
 def user_register(request):

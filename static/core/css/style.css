@@ -2,6 +2,12 @@
 body {
   background-color: #eee; }
 
+a {
+  text-decoration: none !important; }
+
+.cursor-none {
+  cursor: default; }
+
 .vertical {
   display: flex;
   flex-direction: column; }
@@ -12,18 +18,17 @@ body {
 .spacer {
   flex-grow: 1; }
 
-.nav-item {
-  margin: 0 10px;
-  text-decoration: none;
-  color: white; }
-
-.navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #333;
-  padding: 10px;
-  color: white; }
+.navbar .nav-link {
+  padding-top: 4px;
+  padding-bottom: 4px;
+  font-size: 18px;
+  color: #ffffffd3 !important;
+  font-weight: bold;
+  border-radius: 10px; }
+  .navbar .nav-link:hover {
+    color: white !important;
+    transition: 0.5s;
+    background-color: rgba(0, 0, 0, 0.822); }
 
 /* 기본 버튼 스타일 */
 .button {
@@ -32,11 +37,11 @@ body {
   font-size: 16px;
   font-weight: bold;
   text-align: center;
-  text-decoration: none;
+  text-decoration: none !important;
   cursor: pointer;
   border: 2px solid transparent;
   border-radius: 5px;
-  transition: color 0.3s, border-color 0.3s, background-color 0.3s;
+  transition: 0.5s;
   position: relative;
   /* 색상 설정 */
   /* 호버 효과 */ }
@@ -51,20 +56,21 @@ body {
     background-color: #e67e22; }
   .button.purple {
     color: #fff;
-    background-color: #9b59b6; }
+    background-color: #e74c3c; }
   .button.red {
     color: #fff;
-    background-color: #e74c3c; }
+    background-color: #3498db; }
   .button.yellow {
     color: #fff;
-    background-color: #f1c40f; }
+    background-color: #333; }
   .button:hover {
     border-color: rgba(0, 0, 0, 0.5);
-    color: rgba(255, 255, 255, 0.8); }
+    color: rgba(255, 255, 255, 0.8);
+    filter: brightness(0.9); }
 
 /* 기본 스타일 */
 .link {
-  color: black;
+  color: #000;
   /* 검정색 */
   text-decoration: none;
   /* 밑줄 제거 */
@@ -77,62 +83,16 @@ body {
   /* 인라인 블록으로 지정하여 여백이 적용되도록 함 */
   /* 호버 및 포커스 스타일 */ }
   .link:hover {
-    color: black;
+    color: #000;
     /* 검정색 */
     box-shadow: 0 0 10px 3px rgba(0, 0, 0, 0.5);
     /* 새도우 효과, spread 값 조절 */ }
-
-.menu {
-  position: relative;
-  color: #fff;
-  cursor: pointer;
-  /* 커서 모양을 포인터로 변경하여 클릭 가능한 것처럼 보이게 함 */
-  /* 숨겨진 메뉴 스타일 */
-  /* @keyframes를 사용하여 애니메이션 정의 */ }
-  .menu .hidden-menu {
-    display: none;
-    position: absolute;
-    top: 100%;
-    /* 부모 요소 아래에 표시되도록 설정 */
-    right: 0;
-    background-color: #2980b9;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    border-radius: 5px;
-    padding: 10px;
-    min-width: 150px;
-    /* 원하는 폭으로 조절 */
-    opacity: 0;
-    transform: translateY(-20px);
-    animation: slideIn 0.3s ease-in-out;
-    z-index: 1;
-    /* 호버 시 메뉴 표시 */
-    /* 메뉴 아이템 스타일 */ }
-    .menu .hidden-menu:hover {
-      display: block;
-      opacity: 1;
-      transform: translateY(0); }
-    .menu .hidden-menu a {
-      display: block;
-      color: #fff;
-      text-decoration: none;
-      padding: 4px 0;
-      transition: background-color 0.3s; }
-      .menu .hidden-menu a:hover {
-        color: #fff; }
-
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px); }
-  to {
-    opacity: 1;
-    transform: translateY(0); } }
 
 .shorten-title {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 500px;
+  max-width: 800px;
   /* 최대 길이 설정 */ }
 
 /* 상태에 따른 스타일 */
@@ -140,24 +100,12 @@ body {
   color: gray; }
 
 .status.black {
-  color: black; }
+  color: #000; }
 
 .status.red {
   color: red; }
 
 .status.blue {
   color: #515be0; }
-
-.nav-item {
-  transition: color 0.1s;
-  /* Extend mixin */ }
-  .nav-item:hover {
-    text-decoration: none;
-    color: #ffffff;
-    /* bold 색상 지정 */ }
-
-.menu-font, .nav-item {
-  font-weight: bold;
-  color: #eeeeeebb; }
 
 /*# sourceMappingURL=style.css.map */

@@ -1,35 +1,84 @@
 
-<style>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+<!-- <a class="navbar-brand" href="#">Navbar</a> -->
+
+<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+</button>
+
+<div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+        
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'core_index' %}">index</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'project_index' %}">project</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{% url 'all_user_list' %}">users</a>
+    </li>
+
+    <li class="nav-item ">
+        <a class="nav-link" href="{% url 'index_maintenance' %}">maintenance</a>
+    </li>
 
 
-</style>
 
-<div class="navbar horizontal">
+    <!-- <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Dropdown
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item" href="#">Action</a>
+        <a class="dropdown-item" href="#">Another action</a>
 
-    <div >
-        <a class="nav-item" href="{% url 'core_index' %}">index</a>
-        <a class="nav-item" href="{% url 'project_index' %}">project</a>
-        <a class="nav-item" href="{% url 'all_user_list' %}">users</a>
-        <a class="nav-item" href="{% url 'index_maintenance' %}">maintenance</a>
 
-    </div>
+        <div class="dropdown-divider"></div>
+        <a class="dropdown-item" href="#">Something else here</a>
+        </div>
+    </li> -->
+    
+    </ul>
 
-    <div>
+    <ul class="navbar-nav ml-auto">    
         {% if user.is_authenticated  %}
-            <div class="menu">
-                <div class="menu-font">{{user.username}}</div>
-                <div class="hidden-menu">
-                    <a class="nav-item" href="{% url 'detail_user' user.id %}">My Page</a>
-                    <a class="nav-item" href="{% url 'account_logout' %}">log out</a>
-                    <!-- 원하는 만큼 서브 메뉴 추가 -->
-                </div>
+        <li class="nav-item dropleft">
+            <a class="nav-link" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                {{user.username}}
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{% url 'detail_user' user.id %}">My Page</a>
+                <a class="dropdown-item" href="{% url 'account_logout' %}">log out</a>
+    
+    
+            <div class="dropdown-divider"></div>
+            <a class="dropdown-item" href="#">Something else here</a>
             </div>
+        </li>
         {% else %}
-            <a class="nav-item" href="{% url 'user_login' %}">login</a>
+        <li class="nav-item">
+            <a class="nav-link" href="{% url 'user_login' %}">login</a>
+        </li>
+    
         {% endif %}
-    </div>
-</div>
+    </ul>
 
+
+
+
+
+
+    <!-- <form class="form-inline my-2 my-lg-0">
+    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+    </form> -->
+</div>
+</nav>
 
 
 

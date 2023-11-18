@@ -54,6 +54,53 @@ class DetailProject(TemplateView):
             messages.warning(request, "failed to save comment")
         return redirect(reverse('detail_project', kwargs={"pk": project_id}))
     
+
+class EditProjectMember(TemplateView):
+    
+    template_name = 'edit_project_member.html'
+    
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        context = self.get_context_data()
+        project_id = self.kwargs['pk']
+        projects =  Project.objects.get(id=project_id)
+        
+        exclue_ids = [member.user_id for member in projects.get_members()]
+        users = CustomUser.objects.exclude(id__in=exclue_ids).order_by('id')
+
+        context['users'] = users
+        context['project'] = projects
+        
+        return render(request, self.template_name, context)
+    
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data()
+        project_id = self.kwargs['pk']
+        project = Project.objects.get(id = project_id)
+        
+        members = project.get_members()
+        print(members)
+        
+        is_changed, is_errored = False, False
+        for member in members:
+            change_to = request.POST.get(f'manager_{member.user_id}') or False 
+            change_from = member.is_manager
+            
+            if change_to is not change_from:
+                try:
+                    member.is_manager = change_to
+                    member.save()
+                    is_changed = True
+                except:
+                    is_errored = True
+                    
+        if is_changed:
+            messages.success(request, "update done")
+            
+        if is_errored:
+            messages.warning(request, "failed to update")
+            
+        return redirect(reverse('detail_project', kwargs={"pk": project_id}))
+    
 class AddProjectMember(TemplateView):
     template_name = 'add_project_member.html'
     
@@ -150,16 +197,16 @@ class EditProject(TemplateView):
         context['text'] = request.POST.get('text')
         context['is_completed'] = request.POST.get('is_completed', False) 
         context['is_cancled'] = request.POST.get('is_cancled', False) 
+        context['date_due'] = request.POST.get('date_due') or None 
         
         update_proejct = Project.objects.get(id=project_id)
-
         update_proejct.title = context['title']
         update_proejct.text = context['text']
         update_proejct.is_completed = context['is_completed']
         update_proejct.is_cancled = context['is_cancled']
         update_proejct.datetime_updated= datetime.now()
-        print(context['is_completed'])
-        print(context['is_cancled'])
+        update_proejct.date_due = context['date_due']
+        
         try:
             update_proejct.save()
             messages.success(request, "completely updated")

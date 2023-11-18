@@ -41,7 +41,7 @@ th.col-3 {
             {% for project in projects %}
                 <tr class="status {{project.get_status_color}}">
                     <td>{{ project.id }}</td>
-                    <td><a class="link shorten-title status {{project.get_status_color}}" href="{% url 'detail_project' project.id %}">{{ project.title }}</a></td>
+                    <td><a class="link shorten-title status {{project.get_status_color}}" href="{% url 'detail_project' project.id %}">{{ project.title }} {{project.show_number_comments}}</a></td>
                     <td>{{ project.get_created_user_info.username }}</td>
                     <td>{{ project.show_time_created_ago }}</td>
                     <td>{{ project.get_status_str }}</td>
