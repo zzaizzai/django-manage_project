@@ -1,8 +1,10 @@
+from datetime import timedelta, datetime
+from typing import Union, Any, List, Optional
+
 from django.db import models
 from accounts.models import CustomUser
 from django.utils import timezone
-from datetime import timedelta
-from typing import Union, Any, List, Optional
+
 # Create your models here.
 
 
@@ -33,17 +35,17 @@ class PostBaseModel(models.Model):
         return f"Posted at {self.formatted_datetime_created()} (Last updated at {self.formatted_datetime_updated()})"
     
     def formatted_datetime_created(self) -> str:
-        return self.datetime_created.strftime("%Y-%m-%d %H:%M") or ""
+        return self.datetime_created.strftime("%Y-%m-%d %H:%M") or "Time Error"
 
     def formatted_datetime_updated(self) -> Union[str, None]:
         if self.datetime_created == self.datetime_updated or self.datetime_updated is None:
             return None
-        return self.datetime_created.strftime("%Y-%m-%d %H:%M")
+        return self.datetime_created.strftime("%Y-%m-%d %H:%M") or None
 
     def show_time_created_ago(self):
         return self.formatted_time_ago(self.datetime_created)
     
-    def formatted_time_ago(self, datetime) -> str:
+    def formatted_time_ago(self, datetime: datetime) -> str:
         current_time = timezone.now()
         time_difference = current_time - datetime
         
@@ -72,6 +74,7 @@ class PostBaseModel(models.Model):
                 return '1 day'
             return f'{days} days'
             
+            
 class Project(PostBaseModel):
     
     title = models.CharField(max_length=100)
@@ -92,13 +95,12 @@ class Project(PostBaseModel):
     def __str__(self):
         return self.title
     
-    
-    def get_completed_user_info(self) -> CustomUser:
+    def get_completed_user_info(self) -> Optional[CustomUser]:
         self.get_user_info_with_id(self.user_completed_id)
         
-    def get_comments(self):
+    def get_comments(self) -> List['ProjectComment']:
         comments = ProjectComment.objects.filter(project_id=self.id).order_by('datetime_created')
-        return comments
+        return list(comments)
             
     def formatted_datetime_due(self) -> str:
         if self.date_due:
@@ -138,6 +140,7 @@ class ProjectComment(PostBaseModel):
         comment = cls(user_created_id=user_id, project_id=project_id, text=text)
         comment.save()
         return comment
+
 
 class ProjectMemeber(models.Model):
     

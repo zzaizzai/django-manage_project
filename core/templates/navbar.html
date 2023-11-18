@@ -1,18 +1,6 @@
 
 <style>
 
-.nav-item {
-    transition: color 0.1s; 
-}
-.nav-item{
-    font-weight: bold;
-    color: #eeeeeebb;
-}
-.nav-item:hover {
-    text-decoration: none;
-    color: #ffffff; /* bold 색상 지정 */
-}
-
 
 </style>
 
@@ -29,7 +17,7 @@
     <div>
         {% if user.is_authenticated  %}
             <div class="menu">
-                <div>{{user.username}}</div>
+                <div class="menu-font">{{user.username}}</div>
                 <div class="hidden-menu">
                     <a class="nav-item" href="{% url 'detail_user' user.id %}">My Page</a>
                     <a class="nav-item" href="{% url 'account_logout' %}">log out</a>

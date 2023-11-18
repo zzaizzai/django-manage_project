@@ -58,8 +58,10 @@
                     <h5>Comments</h5>
                     <ul class="list-unstyled">
                         <!-- Add comments dynamically -->
-                        <li class="mb-2">
-                            <strong>demo username:</strong> demotext
+                        <li class="mb-2 horizontal">
+                            <a class="link" href=""><strong class="mr-1">Userdemo</strong> </a>: 
+                            <div class="mr-3">TextDemo</div>
+                            <div class="muted">9999 hours</div>
                         </li>
                         {% for comment in project.get_comments %}
                             <li class="mb-2 horizontal">

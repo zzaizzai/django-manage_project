@@ -1,4 +1,5 @@
 from typing import Any
+
 from django import http
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -36,7 +37,7 @@ def user_register(request):
             user = form.save()
             login(request, user)
             messages.success(request, "Registration successful.")
-            return redirect("user_login")
+            return redirect("core_index")
         messages.error(
             request, "Unsuccessful registration. Invalid information.")
 

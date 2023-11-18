@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sass_processor',
     'project',
     'core',
     'accounts',
@@ -130,11 +131,26 @@ USE_I18N = True
 USE_TZ = False
 
 
-# Static files (CSS, JavaScript, Images)
+
+STATICFILES_FINDERS = [
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'sass_processor.finders.CssFinder'
+]
+
+# Static files (
+    # CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+
+
+# Optional: SCSS compiler options
+SASS_PROCESSOR_ENABLED = True
+SASS_PROCESSOR_ROOT = STATIC_ROOT
+
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'core/static'),
