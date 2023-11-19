@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+
+<style>
+
+.card {
+    border-radius: 15px;
+}
+
+.card-header.horizontal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-title {
+    color: #007bff; /* 제목의 텍스트 색상을 원하는 색상으로 설정 */
+}
+
+.card-text {
+    margin-bottom: 10px;
+}
+
+.muted {
+    font-size: 80%; /* 작은 글꼴 크기 조절 */
+    color: rgba(0, 0, 0, 0.5); /* 흐린 색상 조절 */
+    align-self: flex-end;
+}
+</style>
+
+<div class="container mt-5">
+    <div class="card border-0 shadow">
+
+        <!-- Title -->
+        <div class="card-header horizontal bg-primary text-white">
+            <h2 class="text-left m-0">Product Information</h2> 
+            <div class="spacer"></div>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body">
+            <div class="card-text">
+                <h4 class="card-title">{{ product }}</h4>
+
+                <h4>{{ product.get_num_orders }} orders </h4>
+                <ul>
+                        {% for order in product.get_orders %}
+                        <li>{{ order.show_info }}</li> 
+                        {% endfor %}
+
+                </ul>
+                <div class="card-text">Total: {{ product.get_quantity }}</div>
+
+
+
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

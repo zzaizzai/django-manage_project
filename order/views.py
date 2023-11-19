@@ -9,7 +9,7 @@ from django.views.generic.base import TemplateView
 from django.contrib.auth.models import User
 from django.contrib import messages
 from django.conf import settings
-from .models import Order
+from .models import Order, Product
 
 
 # Create your views here.
@@ -27,4 +27,15 @@ class AllOrderlist(TemplateView):
         
         return render(request, self.template_name, context) 
     
+class DetailProduct(TemplateView):
     
+    template_name='detail_product.html'
+    
+    def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
+        context = self.get_context_data()
+        product_name =  self.kwargs['product_name']
+        product = Product(name=product_name)
+        context['product'] = product
+        
+        print(product.get_orders())
+        return render(request, self.template_name, context) 

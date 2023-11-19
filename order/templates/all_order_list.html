@@ -40,10 +40,10 @@ th.col-3 {
         </thead>
         <tbody>
             {% for order in orders %}
-                <tr class="status {{order.get_status_color}}">
+                <tr class="status">
                     <td>{{ order.id }}</td>
-                    <td><a class="link shorten-title status {{order.get_status_color}}" href="#">{{ order.name }}</a></td>
-                    <td><a class="link shorten-title status {{order.get_status_color}}" href="#">{{ order.quantity }}</a></td>
+                    <td><a class="link shorten-title status" href="{% url 'detail_product' order.name %}">{{ order.name }}</a></td>
+                    <td><a class="link shorten-title status" href="#">{{ order.quantity }}</a></td>
                     <td>{{ order.formatted_datetime_orderd }}</td>
                     <td>{{ order.formatted_date_due }}</td>
                     <td>{{ order.show_d_days }}</td>
