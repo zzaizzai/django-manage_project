@@ -1,7 +1,8 @@
+import csv
+from datetime import datetime, timedelta, date
+
 from django.db import models
-import pandas as pd
-from datetime import datetime, timedelta
-from datetime import date
+
 
 
 class Order(models.Model):
@@ -19,18 +20,19 @@ class Order(models.Model):
     
     @classmethod
     def get_orders_from_csv(cls, csv_path) -> list['Order']:
-        # Read csv
-        df = pd.read_csv(csv_path)
-        orders = []
-        for _, row in df.iterrows():
-            order = cls(
-                id=row['id'],
-                name=row['name'],
-                quantity=row['quantity'],
-                datetime_order= datetime.strptime(row['datetime_order'],  "%Y-%m-%d %H:%M:%S"),
-                date_due=datetime.strptime(row['date_due'],  "%Y-%m-%d %H:%M:%S").date()
-            )
-            orders.append(order)
+        with open(csv_path, 'r') as csvfile:
+            csvreader = csv.DictReader(csvfile)
+            orders = []
+            for row in csvreader:
+                print(row)
+                order = cls(
+                    id=row['id'],
+                    name=row['name'],
+                    quantity=row['quantity'],
+                    datetime_order= datetime.strptime(row['datetime_order'],  "%Y-%m-%d %H:%M:%S"),
+                    date_due=datetime.strptime(row['date_due'],  "%Y-%m-%d %H:%M:%S").date()
+                )
+                orders.append(order)
             
         return orders
 
