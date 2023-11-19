@@ -18,10 +18,10 @@ class AllOrderlist(TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         context = self.get_context_data()
         
-        path = os.path.join(settings.BASE_DIR, 'sample_data\data1.csv')
+        # path = os.path.join(settings.BASE_DIR, 'sample_data\data1.csv')
         
-        orders = Order.get_orders_from_csv(path)
-        context['orders'] = orders
+        # orders = Order.get_orders_from_csv(path)
+        # context['orders'] = orders
         
         return render(request, self.template_name, context) 
     
