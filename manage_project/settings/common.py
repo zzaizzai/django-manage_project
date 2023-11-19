@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'project',
     'core',
     'accounts',
-    'maintenance'
+    'maintenance',
+    'order'
 ]
 
 AUTH_USER_MODEL = 'accounts.CustomUser'

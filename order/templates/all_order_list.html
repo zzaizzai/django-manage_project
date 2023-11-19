@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block body %}
+
+<style>
+
+/* Optional: Add your custom styles here */
+th.col-1 {
+    width: 5%; /* Adjust the width as needed */
+}
+
+th.col-4 {
+    width: 60%; /* Adjust the width as needed */
+}
+
+th.col-2 {
+    width: 15%; /* Adjust the width as needed */
+}
+
+th.col-3 {
+    width: 15%; /* Adjust the width as needed */
+}
+
+
+
+</style>
+
+
+<div class="container mt-5">
+    <table class="table-hover">
+        <thead>
+            <tr>
+                <th class="col-1 p-0">UID</th>
+                <th class="col-1 p-0">Product Name</th>
+                <th class="col-1 p-0">Quantity</th>
+                <th class="col-1 p-0">Orderd</th>
+                <th class="col-1 p-0">Due</th>
+                <th class="col-1 p-0">Days</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                <tr class="status {{order.get_status_color}}">
+                    <td>{{ order.id }}</td>
+                    <td><a class="link shorten-title status {{order.get_status_color}}" href="#">{{ order.name }}</a></td>
+                    <td><a class="link shorten-title status {{order.get_status_color}}" href="#">{{ order.quantity }}</a></td>
+                    <td>{{ order.formatted_datetime_orderd }}</td>
+                    <td>{{ order.formatted_date_due }}</td>
+                    <td>{{ order.show_d_days }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
