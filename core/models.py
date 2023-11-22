@@ -18,3 +18,12 @@ class CustomUser(Base):
     username = Column(String(150))
     password = Column(String(128))
     is_supseruser = Boolean()
+
+class AAA(Base):
+    __tablename__ = 'aaa'
+
+    id = Column(Integer, Sequence('account_user_id_seq'), primary_key=True)
+    last_login = Column(DateTime)
+    username = Column(String(150))
+    password = Column(String(128))
+    is_supseruser = Boolean()

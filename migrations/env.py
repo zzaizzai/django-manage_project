@@ -23,10 +23,33 @@ from manage_project.settings.database import Base
 # target_metadata = None
 target_metadata = Base.metadata
 
+from core.models import AAA
+
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
+def include_object(object, name, type_, reflected, compare_to):
+    print(f"Checking: type={type_}, name={name}")
+    if type_ == "table":
+        if name in [
+                    'accounts_customuser',
+                    'accounts_customuser_user_permissions',
+                    'django_admin_log',
+                    'auth_permission',
+                    'accounts_customuser_groups' ,
+                    'auth_group',
+                    'django_content_type',
+                    'django_session','django_migrations', 
+                    'project_comment', 
+                    'project_member', 
+                    'projects', 
+                    'auth_group_permissions', 
+                    'master_department', 
+                    'auth_group_name'
+                    ]:
+            return False
+    return True
 
 
 def run_migrations_offline() -> None:
@@ -69,7 +92,8 @@ def run_migrations_online() -> None:
     with connectable.connect() as connection:
         context.configure(
             connection=connection, target_metadata=target_metadata,
-            include_name={'accounts_customuser'}
+            include_schemas = True,
+            include_object = include_object
                 
             
         )
