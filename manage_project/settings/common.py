@@ -44,7 +44,8 @@ INSTALLED_APPS = [
     'core',
     'accounts',
     'maintenance',
-    'order'
+    'order',
+    'aldjemy',
 ]
 
 AUTH_USER_MODEL = 'accounts.CustomUser'
