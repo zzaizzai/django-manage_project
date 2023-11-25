@@ -8,8 +8,10 @@ from django.views.generic.base import TemplateView
 from django.contrib.auth.models import User
 from django.contrib import messages
 
+from core.models import Project
+from manage_project.settings.database import session
 from accounts.models import CustomUser
-from .models import Project, ProjectMemeber, ProjectComment
+from .models import ProjectMemeber, ProjectComment
 
 
 def project_index(request):
@@ -29,8 +31,10 @@ class AllProjectsList(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
 
-        context['projects'] = Project.objects.all().order_by('-id')
-
+        proejcts = session.query(Project).all()
+        context['projects'] = proejcts
+        session.close()
+        
         return render(request, self.template_name, context)
 
 
