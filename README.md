@@ -10,3 +10,11 @@
 
 dev.
 2023.11.11~
+
+
+
+
+```terminal
+(under construction)
+docker-compose up --build
+```
