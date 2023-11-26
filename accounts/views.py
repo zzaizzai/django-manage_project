@@ -4,13 +4,14 @@ from django import http
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse_lazy
-from .models import CustomUser
+# from .models import CustomUser
+from core.models import CustomUser
 from django.db import connection
 from django.contrib import messages
 from django.views.generic.base import TemplateView
 from .forms import RegisterUserForm
 # Create your views here.
-
+from manage_project.settings.database import Base, session
 
 class AllUsersList(TemplateView):
     
@@ -18,7 +19,8 @@ class AllUsersList(TemplateView):
     
     def get(self, request, *args: Any, **kwargs: Any):
         context = self.get_context_data()
-        users = CustomUser.objects.all().order_by('id')
+        users = session.query(CustomUser).order_by(CustomUser.id.desc()).all()
+        session.close()
         context['users'] = users
         return render(request, self.template_name, context)
     
@@ -80,10 +82,11 @@ class DetailUser(TemplateView):
         user_id = self.kwargs['pk']
         
         try:
-            user = CustomUser.objects.get(id=user_id)
-            context['user'] = user
+            user_detail = session.query(CustomUser).filter_by(id=user_id).first()
+            context['user_detail'] = user_detail
+            session.close()
         except:
-            return redirect('all_users_list')
+            return redirect('all_user_list')
         
         return render(request, self.template_name, context)
     

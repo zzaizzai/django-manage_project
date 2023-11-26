@@ -15,10 +15,10 @@
 <h3>Base Information</h3>
 <div>
     <ul>
-        <li>UID: {{user.id}}</li>
-        <li>name: {{user.username}}</li>
-        <li>Department: {{user.get_department_info}}</li>
-        <li>Joined date: {{user.formatted_joined_time}}</li>
+        <li>UID: {{user_detail.id}}</li>
+        <li>name: {{user_detail.username}}</li>
+        <li>Department: {{user_detail.get_department_info}}</li>
+        <li>Joined date: {{user_detail.formatted_joined_time}}</li>
     </ul>
 </div>
 
@@ -26,11 +26,11 @@
 <br>
 <h4>Projects</h4>
 <div>
-    <strong class="mx-2">Total projects: {{user.get_number_projects}} </strong>
-    <span>(cancled: {{user.get_number_projects_cancled}}, completed: {{user.get_number_projects_completed}})</span></div>
+    <strong class="mx-2">Total projects: {{user_detail.get_number_projects}} </strong>
+    <span>(cancled: {{user_detail.get_number_projects_cancled}}, completed: {{user_detail.get_number_projects_completed}})</span></div>
 <div>
     <ul>
-        {% for project in user.get_projects %}
+        {% for project in user_detail.get_projects %}
         <li><a class="status {{project.get_status_color}} link" href="{% url 'detail_project' project.id %}">{{project}}</a></li>
     {% endfor %}
     </ul>

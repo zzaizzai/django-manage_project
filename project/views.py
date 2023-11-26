@@ -8,10 +8,10 @@ from django.views.generic.base import TemplateView
 from django.contrib.auth.models import User
 from django.contrib import messages
 
-from core.models import Project
+from core.models import Project, CustomUser, ProjectMember
 from manage_project.settings.database import session
-from accounts.models import CustomUser
-from .models import ProjectMemeber, ProjectComment
+# from accounts.models import CustomUser
+from .models import  ProjectComment
 
 
 def project_index(request):
@@ -31,7 +31,7 @@ class AllProjectsList(TemplateView):
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
 
-        proejcts = session.query(Project).all()
+        proejcts = session.query(Project).order_by(Project.id.desc()).all()
         context['projects'] = proejcts
         session.close()
         
@@ -44,7 +44,11 @@ class DetailProject(TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         context = super().get_context_data()
         project_id = self.kwargs['pk']
-        context['project'] = Project.objects.get(id=project_id)
+        
+        project = session.query(Project).filter_by(id=project_id).first()
+        session.close()
+        context['project'] = project
+        
         return render(request, self.template_name, context)
     
     # Create Comment
@@ -66,43 +70,52 @@ class EditProjectMember(TemplateView):
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         context = self.get_context_data()
         project_id = self.kwargs['pk']
-        projects =  Project.objects.get(id=project_id)
+        # projects =  Project.objects.get(id=project_id)
+        project = session.query(Project).filter_by(id=project_id).first()
         
-        exclue_ids = [member.user_id for member in projects.get_members()]
-        users = CustomUser.objects.exclude(id__in=exclue_ids).order_by('id')
-
+        exclude_ids = [member.user_id for member in project.get_members()]
+        users = session.query(CustomUser).filter(~CustomUser.id.in_(exclude_ids)).order_by(CustomUser.id).all()
+        
         context['users'] = users
-        context['project'] = projects
+        context['project'] = project
         
+        session.close()
         return render(request, self.template_name, context)
     
     def post(self, request, *args, **kwargs):
-        context = self.get_context_data()
+        
         project_id = self.kwargs['pk']
-        project = Project.objects.get(id = project_id)
+        # Project.objects.get(id = project_id)
+        project = session.query(Project).filter_by(id=project_id).first()
         
         members = project.get_members()
         print(members)
-        
         is_changed, is_errored = False, False
-        for member in members:
-            change_to = request.POST.get(f'manager_{member.user_id}') or False 
-            change_from = member.is_manager
-            
-            if change_to is not change_from:
-                try:
-                    member.is_manager = change_to
-                    member.save()
+
+        try:
+            for member in members:
+                change_to = request.POST.get(f'manager_{member.user_id}') or False 
+                change_from = member.is_manager
+                
+                if bool(change_to) is not change_from:
+                    member.is_manager = bool(change_to)
                     is_changed = True
-                except:
-                    is_errored = True
+                    
+            session.commit()  # 모든 변경 한 번에 커밋
+        except Exception as e:
+            session.rollback()  # 변경사항 롤백
+            is_errored = True
+            print(f"Error during commit: {e}")
+        finally:
+            session.close()  # 세션 닫기
                     
         if is_changed:
             messages.success(request, "update done")
             
         if is_errored:
             messages.warning(request, "failed to update")
-            
+        
+        session.close()
         return redirect(reverse('detail_project', kwargs={"pk": project_id}))
     
 class AddProjectMember(TemplateView):
@@ -112,8 +125,8 @@ class AddProjectMember(TemplateView):
         context = self.get_context_data()
         
         project_id = self.kwargs['pk']
-        context['project'] = Project.objects.get(id=project_id)
-        context['users'] = CustomUser.objects.all().order_by('id')
+        context['project'] = Project.get_project(project_id=project_id)
+        context['users'] = CustomUser.get_all_users()
         
         return render(request, self.template_name, context)
     
@@ -123,21 +136,26 @@ class AddProjectMember(TemplateView):
         context['project_id'] = self.kwargs['pk']
         
         try:
-            project_member = ProjectMemeber.objects.get(user_id = context['user_id'], project_id = context['project_id'])
-        except ProjectMemeber.DoesNotExist:
+            project_member = session.query(ProjectMember).filter_by(user_id=context['user_id'], project_id=context['project_id']).first()
+        except ProjectMember.DoesNotExist:
             project_member = None
             
+        #* if already the users exist, go back to page 
         if project_member is not None:
             messages.warning(request , "user is already member")
             return redirect(reverse('detail_project', kwargs={"pk": context['project_id']}))
         
         try:
-            user = CustomUser.objects.get(id=context['user_id'])
-            new_project_memeber = ProjectMemeber(user_id=user.id, project_id = context['project_id'])
-            new_project_memeber.save()
+            user = CustomUser.get_user(user_id=context['user_id'])
+            new_project_memeber = ProjectMember(user_id=user.id, project_id = context['project_id'])
+            session.add(new_project_memeber)
+            session.commit()
             messages.success(request, "done!")
         except:
+            session.rollback()
             messages.warning(request, "failed to add member")
+        finally:
+            session.close()
             
         return redirect(reverse('detail_project', kwargs={"pk": context['project_id']}))
 
@@ -147,7 +165,6 @@ class AddProject(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-
         return context
 
     def post(self, request, *args, **kwargs):
@@ -155,21 +172,30 @@ class AddProject(TemplateView):
 
         context['title'] = request.POST.get('title')
         context['text'] = request.POST.get('text')
-        print()
+        
         new_project = Project(
             title=context['title'],
             text=context['text'],
             user_created_id=request.user.id
         )
+        
+        is_success = False
         try:
-            new_project.save()
+            session.add(new_project)
+            session.commit()
             messages.success(request, "upload done")
-            return redirect('project_index')
+            is_success = True
         except Exception as e:
-            messages.warning(request, "upload failed")
-            print(e)
-            return render(request, self.template_name, context)
-
+            session.rollback()
+            messages.warning(request, f"upload failed {e}")
+        finally:
+            session.close()
+            
+        if is_success is True:
+            return redirect('project_index')
+        
+        return render(request, self.template_name, context)
+        
 
 class EditProject(TemplateView):
     template_name = 'edit_project.html'
@@ -179,10 +205,12 @@ class EditProject(TemplateView):
         project_id = self.kwargs['pk']
 
         try:
-            context['project'] = Project.objects.get(id=project_id)
-        except:
-            pass
-
+            context['project'] = Project.get_project(project_id=project_id)
+        except Exception as e:
+            print(e)
+        finally:
+            session.close()
+            
         return context
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
@@ -199,23 +227,26 @@ class EditProject(TemplateView):
 
         context['title'] = request.POST.get('title')
         context['text'] = request.POST.get('text')
-        context['is_completed'] = request.POST.get('is_completed', False) 
-        context['is_cancled'] = request.POST.get('is_cancled', False) 
+        context['is_completed'] = bool(request.POST.get('is_completed', False) )
+        context['is_cancled'] = bool(request.POST.get('is_cancled', False)) 
         context['date_due'] = request.POST.get('date_due') or None 
         
-        update_proejct = Project.objects.get(id=project_id)
+        update_proejct = Project.get_project(project_id=project_id)
         update_proejct.title = context['title']
         update_proejct.text = context['text']
-        update_proejct.is_completed = context['is_completed']
-        update_proejct.is_cancled = context['is_cancled']
+        update_proejct.is_completed = bool(context['is_completed'])
+        update_proejct.is_cancled = bool(context['is_cancled'])
         update_proejct.datetime_updated= datetime.now()
         update_proejct.date_due = context['date_due']
         
         try:
-            update_proejct.save()
+            session.commit()
             messages.success(request, "completely updated")
-        except:
-            messages.warning( request, 'failed to update')
+        except Exception as e:
+            session.rollback()
+            messages.warning(request, f"failed to update: {e}")
             return render(request, self.template_name, context)
-
+        finally:
+            session.close()
+            
         return redirect(reverse('detail_project', kwargs={"pk": project_id}))

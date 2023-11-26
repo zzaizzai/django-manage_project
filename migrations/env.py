@@ -23,7 +23,7 @@ from manage_project.settings.database import Base
 # target_metadata = None
 target_metadata = Base.metadata
 
-from core.models import AAA
+from core.models import Project, ProjectComment, ProjectMember, CustomUser
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
@@ -41,11 +41,11 @@ def include_object(object, name, type_, reflected, compare_to):
                     'auth_group',
                     'django_content_type',
                     'django_session','django_migrations', 
-                    'project_comment', 
-                    'project_member', 
-                    'projects', 
+                    # 'project_comment', 
+                    # 'project_member', 
+                    # 'projects', 
                     'auth_group_permissions', 
-                    'master_department', 
+                    # 'master_department', 
                     'auth_group_name'
                     ]:
             return False
