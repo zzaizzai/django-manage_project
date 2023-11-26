@@ -1,8 +1,19 @@
 version: '3'
 
 services:
-  web:
-    build: .
+  databse:
+    build: ./db
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: manage_project
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - ./sample_data/create_db.sql:/docker-entrypoint-initdb.d/create_db.sql
+  django:
+    build: ./django
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
@@ -10,5 +21,3 @@ services:
       - "8000:8000"
     depends_on:
       - db
-  db:
-    image: postgres:latest

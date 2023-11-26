@@ -91,14 +91,6 @@ class CustomUser(Base):
     
     def formatted_joined_time(self) -> str:
         return self.date_joined.strftime("%Y-%m-%d %H:%M") or "no joined time"
-class AAA(Base):
-    __tablename__ = 'aaa'
-
-    id = Column(Integer, primary_key=True)
-    last_login = Column(DateTime)
-    username = Column(String(150))
-    password = Column(String(128))
-    is_supseruser = Boolean()
 
 
 class PostBaseModel(Base):
