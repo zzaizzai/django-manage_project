@@ -105,6 +105,12 @@ a {
     filter: brightness(0.9); 
   }
 
+  &:disabled {
+    cursor: default;
+    opacity: 0.7;
+    filter: brightness(1); // disabled 상태에서는 brightness 효과 제거
+  }
+
 }
 
 /* 기본 스타일 */

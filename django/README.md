@@ -5,6 +5,9 @@
 
 
 ```
+python -m venv venv
+cd venv/Scripts
+.\activate
 (venv) python -m pip install -r requirements.txt
 ```
 

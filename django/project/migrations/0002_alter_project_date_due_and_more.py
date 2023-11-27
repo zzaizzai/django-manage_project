@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterField(
             model_name='project',
-            name='is_cancled',
+            name='is_canceled',
             field=models.BooleanField(default=False),
         ),
         migrations.AlterField(

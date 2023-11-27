@@ -4,9 +4,9 @@ from typing import Optional, List, Dict, Any, Union
 from django.utils import timezone
 from manage_project.settings.database import Base, session
 from maintenance.models import MasterDepartment
-
+from sqlalchemy.orm import undefer
 from sqlalchemy import text, Column, Integer, String, create_engine, DateTime, Date, Sequence, Boolean, Text, func
-
+from sqlalchemy import or_
 
 class MyModel(Base):
     __tablename__ = 'my_model'
@@ -120,7 +120,7 @@ class PostBaseModel(Base):
             seconds = int(time_difference.seconds)
             if seconds <= 10:
                 return 'Now'
-            return f'{seconds} sec'
+            return f'{seconds} secs'
         elif time_difference < timedelta(hours=1):
             # under 1hour
             minutes = int(time_difference.seconds / 60)
@@ -133,12 +133,18 @@ class PostBaseModel(Base):
             if hours == 1:
                 return '1 hour'
             return f'{hours} hours'
-        else:
-            # over 24hours
+        elif time_difference < timedelta(days=30):
+            # under 30 days
             days = time_difference.days
             if days == 1:
                 return '1 day'
             return f'{days} days'
+        else:
+            # over 30 days, consider it as months
+            months = round(time_difference.days / 30)
+            if months == 1:
+                return '1 month'
+            return f'{months} months'
 
     def get_user_info_with_id(self, id: int) -> Optional[CustomUser]:
         user = session.query(CustomUser).filter_by(id=id).first()
@@ -196,6 +202,55 @@ class Project(PostBaseModel):
     def get_project(cls, project_id: int) -> Optional['Project']:
         project = session.query(Project).filter_by(id=project_id).first()
         return project
+    
+    @classmethod
+    def get_projects(cls) -> List['Project']:
+        projects = session.query(Project).order_by(Project.id.desc()).all()
+        return projects
+    
+
+    @classmethod
+    def get_projects_with_options(cls, search_word=None, sort_by=None) -> List['Project']:
+        query = (
+            session.query(Project)
+            .join(CustomUser, Project.user_created_id == CustomUser.id)
+            )
+
+        if search_word:
+            query = query.filter(
+                or_(
+                    Project.title.ilike(f"%{search_word}%"),
+                    CustomUser.username.ilike(f"%{search_word}%")
+                )
+            )
+            
+        if sort_by:
+            if sort_by == 'created':
+                query = query.order_by(Project.datetime_created.desc())
+            elif sort_by == 'id':
+                query = query.order_by(Project.id.desc())
+            else:
+                pass
+            
+        query = query.order_by(Project.id.desc())
+
+        projects = query.all()
+        return projects
+    
+    @classmethod
+    def get_demo_proejct(
+        cls, 
+        id:int = 999999, 
+        datetime_created = datetime.now(timezone.utc),
+        datetime_updated = datetime.now(timezone.utc)
+        ) -> 'Project':
+        return Project(
+            id=id,
+            title="DEMO PROJECT" , 
+            text = "DEMO PROJECT",
+            datetime_created = datetime_created,
+            datetime_updated = datetime_updated
+                    )
     
     def get_status_color(self) -> str:
         if self.is_canceled is True:

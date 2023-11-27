@@ -1,6 +1,7 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any
 
+from django.utils import timezone
 from django import http
 from django.http import HttpResponse, HttpRequest
 from django.shortcuts import render, redirect, reverse
@@ -30,9 +31,32 @@ class AllProjectsList(TemplateView):
 
     def get(self, request, *args, **kwargs):
         context = self.get_context_data()
-
-        proejcts = session.query(Project).order_by(Project.id.desc()).all()
-        context['projects'] = proejcts
+        
+        
+        search_word = request.GET.get('q')
+        sort = request.GET.get('sort')
+        context['sort'] = sort if sort else ""
+        context['q'] = search_word if search_word else ""
+        
+        
+        if search_word is None or len(search_word) == 0 :
+            #* Normla Mode
+            projects = Project.get_projects()
+        else:
+            #* Search Mode
+            projects = Project.get_projects_with_options(search_word, sort)
+        
+        
+        #* DEMO projects
+        days_ago = datetime.now(timezone.utc) - timedelta(days=100)
+        aa = Project.get_demo_proejct(datetime_created=days_ago)
+        days_ago = datetime.now(timezone.utc) - timedelta(days=999)
+        bb  = Project.get_demo_proejct(datetime_created=days_ago)
+        projects.append(aa)
+        projects.append(bb)
+        
+        
+        context['projects'] = projects
         session.close()
         
         return render(request, self.template_name, context)
@@ -45,10 +69,15 @@ class DetailProject(TemplateView):
         context = super().get_context_data()
         project_id = self.kwargs['pk']
         
-        project = session.query(Project).filter_by(id=project_id).first()
-        session.close()
-        context['project'] = project
         
+        project = Project.get_project(project_id=project_id)
+        session.close()
+
+        if project is None:
+            messages.warning(request, "project page error")
+            return redirect('all_projects_list')
+        
+        context['project'] = project
         return render(request, self.template_name, context)
     
     # Create Comment
@@ -85,7 +114,6 @@ class EditProjectMember(TemplateView):
     def post(self, request, *args, **kwargs):
         
         project_id = self.kwargs['pk']
-        # Project.objects.get(id = project_id)
         project = session.query(Project).filter_by(id=project_id).first()
         
         members = project.get_members()
@@ -101,13 +129,13 @@ class EditProjectMember(TemplateView):
                     member.is_manager = bool(change_to)
                     is_changed = True
                     
-            session.commit()  # 모든 변경 한 번에 커밋
+            session.commit() 
         except Exception as e:
-            session.rollback()  # 변경사항 롤백
+            session.rollback()  
             is_errored = True
             print(f"Error during commit: {e}")
         finally:
-            session.close()  # 세션 닫기
+            session.close()
                     
         if is_changed:
             messages.success(request, "update done")
@@ -228,16 +256,17 @@ class EditProject(TemplateView):
         context['title'] = request.POST.get('title')
         context['text'] = request.POST.get('text')
         context['is_completed'] = bool(request.POST.get('is_completed', False) )
-        context['is_cancled'] = bool(request.POST.get('is_cancled', False)) 
+        context['is_canceled'] = bool(request.POST.get('is_canceled', False)) 
         context['date_due'] = request.POST.get('date_due') or None 
         
         update_proejct = Project.get_project(project_id=project_id)
         update_proejct.title = context['title']
         update_proejct.text = context['text']
         update_proejct.is_completed = bool(context['is_completed'])
-        update_proejct.is_cancled = bool(context['is_cancled'])
+        update_proejct.is_canceled = bool(context['is_canceled'])
         update_proejct.datetime_updated= datetime.now()
         update_proejct.date_due = context['date_due']
+        
         
         try:
             session.commit()

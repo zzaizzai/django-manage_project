@@ -24,7 +24,7 @@ class Migration(migrations.Migration):
                 ('datetime_updated', models.DateTimeField(auto_now_add=True)),
                 ('date_due', models.DateField()),
                 ('datetime_cancled', models.DateTimeField()),
-                ('is_cancled', models.BooleanField()),
+                ('is_canceled', models.BooleanField()),
                 ('is_completed', models.BooleanField()),
             ],
             options={

@@ -86,7 +86,7 @@ class Project(PostBaseModel):
     date_due = models.DateField(null=True)
     datetime_cancled = models.DateTimeField(null=True)
     
-    is_cancled = models.BooleanField(default=False)
+    is_canceled = models.BooleanField(default=False)
     is_completed = models.BooleanField(default=False)
 
     class Meta:
@@ -132,14 +132,14 @@ class Project(PostBaseModel):
         return members_is_manager
     
     def get_status_color(self) -> str:
-        if self.is_cancled is True :
+        if self.is_canceled is True :
             return 'gray'
         if self.is_completed is True :
             return 'blue'
         return 'black'
     
     def get_status_str(self) -> str:
-        if self.is_cancled is True:
+        if self.is_canceled is True:
             return "Cancled"
         if self.is_completed is True:
             return "Completed"

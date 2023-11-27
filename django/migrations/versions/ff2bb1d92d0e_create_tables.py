@@ -187,7 +187,7 @@ def downgrade() -> None:
     sa.Column('datetime_updated', postgresql.TIMESTAMP(timezone=True), autoincrement=False, nullable=False),
     sa.Column('date_due', sa.DATE(), autoincrement=False, nullable=True),
     sa.Column('datetime_cancled', postgresql.TIMESTAMP(timezone=True), autoincrement=False, nullable=True),
-    sa.Column('is_cancled', sa.BOOLEAN(), autoincrement=False, nullable=False),
+    sa.Column('is_canceled', sa.BOOLEAN(), autoincrement=False, nullable=False),
     sa.Column('is_completed', sa.BOOLEAN(), autoincrement=False, nullable=False),
     sa.PrimaryKeyConstraint('id', name='projects_pkey')
     )

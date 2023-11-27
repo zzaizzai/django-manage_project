@@ -5,20 +5,25 @@
 <style>
 
 /* Optional: Add your custom styles here */
-th.col-1 {
+th.col-10 {
+    width: 10%; /* Adjust the width as needed */
+}
+
+th.col-5 {
     width: 5%; /* Adjust the width as needed */
 }
 
-th.col-4 {
-    width: 60%; /* Adjust the width as needed */
+
+th.col-65 {
+    width: 65%; /* Adjust the width as needed */
 }
 
-th.col-2 {
+th.col-15 {
     width: 15%; /* Adjust the width as needed */
 }
 
-th.col-3 {
-    width: 15%; /* Adjust the width as needed */
+th.col-30 {
+    width: 30%; /* Adjust the width as needed */
 }
 
 
@@ -28,9 +33,19 @@ th.col-3 {
 
 <div class="container mt-5">
 
+    <!--! SubNavBar  -->
     <div class="horizontal">
         <h3>Project List</h3>
         <div class="spacer"></div>
+
+        <!--! Search Bar  -->
+        <div class="mr-3">
+            <form action="{% url 'all_projects_list' %}" method="get">
+                <input type="text" name="q" value="{{ q }}">
+                <input type="hidden" name="sort" value="{{sort}}">
+                <button type="submit" class="button green">Search</button>
+            </form>
+        </div>
         <a class="button blue" href="{% url 'add_project' %}">New Project</a>
     </div> 
 
@@ -40,11 +55,11 @@ th.col-3 {
     <table class="table-hover">
         <thead>
             <tr>
-                <th class="col-1 p-0">UID</th>
-                <th class="col-6 p-0">Title</th>
-                <th class="col-1 p-0">Username</th>
-                <th class="col-1 p-0">Created</th>
-                <th class="col-1 p-0">Status</th>
+                <th class="col-5 p-0">UID</th>
+                <th class="col-65 p-0">Title</th>
+                <th class="col-10 p-0">Username</th>
+                <th class="col-10 p-0">Created</th>
+                <th class="col-10 p-0">Status</th>
             </tr>
         </thead>
         <tbody>
