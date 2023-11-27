@@ -26,7 +26,9 @@ th.col-30 {
     width: 30%; /* Adjust the width as needed */
 }
 
-
+.highlight {
+        background-color: rgba(255, 255, 0, 0.425);
+    }
 
 </style>
 
@@ -66,8 +68,8 @@ th.col-30 {
             {% for project in projects %}
                 <tr class="status {{project.get_status_color}}">
                     <td>{{ project.id }}</td>
-                    <td><a class="link shorten-title status {{project.get_status_color}}" href="{% url 'detail_project' project.id %}">{{ project.title }} {{project.show_number_comments}}</a></td>
-                    <td>{{ project.get_created_user_info.username  }}</td>
+                    <td><a class="anchor-highlight link shorten-title status {{project.get_status_color}}" href="{% url 'detail_project' project.id %}">{{ project.title }} {{project.show_number_comments}}</a></td>
+                    <td class="anchor-highlight">{{ project.get_created_user_info.username  }}</td>
                     <td>{{ project.show_time_created_ago }}</td>
                     <td>{{ project.get_status_str }}</td>
                 </tr>
@@ -75,4 +77,24 @@ th.col-30 {
         </tbody>
     </table>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script>
+
+    $(document).ready(function () {
+        console.log(document)
+        var searchTerm = "{{ q }}";
+        if (searchTerm) {
+            $(".anchor-highlight").each(function () {
+                var titleText = $(this).text();
+                var highlightedText = titleText.replace(new RegExp(searchTerm, "gi"), function (match) {
+                    return '<span class="highlight">' + match + '</span>';
+                });
+                $(this).html(highlightedText);
+            });
+        }
+    });
+</script>
+
+
 {% endblock %}
