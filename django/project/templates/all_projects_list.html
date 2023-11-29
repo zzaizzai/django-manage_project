@@ -30,6 +30,9 @@ th.col-30 {
         background-color: rgba(255, 255, 0, 0.425);
     }
 
+
+
+
 </style>
 
 
@@ -48,7 +51,13 @@ th.col-30 {
                 <button type="submit" class="button green">Search</button>
             </form>
         </div>
-        <a class="button blue" href="{% url 'add_project' %}">New Project</a>
+        <a class="button blue" href="{% url 'add_project' %}">New</a>
+
+        <!--! Create Dummy Data  -->
+        <form action="{% url 'create_fake' %}" method="post">
+            {% csrf_token %}
+            <button class="mx-2 button red" type="submit">CreateDummy</button>
+        </form>
     </div> 
 
     <br>
@@ -77,7 +86,7 @@ th.col-30 {
         </tbody>
     </table>
 
-    
+
     <div class="pagination">
         <span class="step-links">
             {% if projects.has_previous %}

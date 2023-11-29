@@ -26,18 +26,17 @@
       </div>
 
       <div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" {% if project.is_completed %}checked{% endif %} value="True"  name="is_completed" id="is_completed">
-          <label class="form-check-label" for="is_completed">completed</label>
+        <div class="custom-control custom-switch">
+          <input class="custom-control-input" type="checkbox" {% if project.is_completed %}checked{% endif %} value="True"  name="is_completed" id="is_completed">
+          <label class="custom-control-label" for="is_completed">completed</label>
         </div>
-        <div class="form-check">
-          <input class="form-check-input" type="checkbox" {% if project.is_canceled %}checked{% endif %} value="True"  name="is_canceled" id="is_canceled">
-          <label class="form-check-label" for="is_canceled">cancled</label>
+        <div class="custom-control custom-switch">
+          <input class="custom-control-input" type="checkbox" {% if project.is_canceled %}checked{% endif %} value="True"  name="is_canceled" id="is_canceled">
+          <label class="custom-control-label" for="is_canceled">cancled</label>
         </div>
           <br>
 
       </div>
-      
       
       <button type="button" onclick="goBack()" class="button purple">Cancle</button>
       <button type="submit" class="button blue">Edit</button>

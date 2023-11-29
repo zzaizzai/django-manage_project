@@ -300,35 +300,26 @@ class EditProject(TemplateView):
 class CreateFakeDate(TemplateView):
 
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
-        from faker import Faker
-        import random
-        
-        fake = Faker()
-        
-        business_sentence_1 = fake.sentence(nb_words=10, variable_nb_words=True, ext_word_list=None)
-        business_sentence_2 = fake.sentence(nb_words=8, variable_nb_words=True, ext_word_list=None)
-        business_sentence_3 = fake.sentence(nb_words=12, variable_nb_words=True, ext_word_list=None)
 
-        # 3줄 합치기
-        combined_business_sentences = f"{business_sentence_1} {business_sentence_2} {business_sentence_3}"
+        from core.models import DummyData
         
-        start_date = datetime.strptime('2022-01-01', '%Y-%m-%d')
-        end_date = datetime.strptime('2022-12-31', '%Y-%m-%d')
-
-        random_date = fake.date_between(start_date=start_date, end_date=end_date)
-        due_date = random_date + timedelta(days=random.randint(10, 60))
-        
-        fake_data = {
-            'name': fake.name(),
-            'user_created_id' : random.randint(1,4),
-            'address': fake.address(),
-            'email': fake.email(),
-            'text': fake.text(),
-            'word': fake.word(),
-            'random_date': random_date,
-            'due_date': due_date,
-            'business_sentence ': fake.sentence(nb_words=10, variable_nb_words=True, ext_word_list=None),
-            'combined_business_sentences': combined_business_sentences
-        }
+        dummy = DummyData()
+        fake_data = dummy.get_project_dummy()
         return JsonResponse(fake_data)
+    
+    def post(self, request, *args, **kwargs):
+
+        from core.models import DummyData
+        aa = DummyData()
+
+        try:
+            aa.add_proejct_dummys(25)
+        except Exception as e:
+            print(e)
+            messages.warning(request, f"failed to update: {e}")
+        finally:
+            session.close()
+            
+        return redirect('all_projects_list')
+        
     

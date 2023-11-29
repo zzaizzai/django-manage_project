@@ -168,19 +168,35 @@ a {
   }
 }
 
-// .nav-item {
-//   transition: color 0.1s;
 
-//   /* Extend mixin */
-//   @extend .menu-font;
 
-//   &:hover {
-//     text-decoration: none;
-//     color: $white-color; /* bold 색상 지정 */
-//   }
-// }
+/* Pagination styling */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
 
-// .menu-font {
-//   font-weight: bold;
-//   color: rgba($white-color, 0.75);
-// }
+.step-links {
+  display: flex;
+  align-items: center;
+  list-style: none;
+  padding: 0;
+}
+
+.step-links a {
+  color: #007bff;
+  margin: 0 5px;
+  text-decoration: none;
+  font-weight: bold; /* Apply bold font to all buttons */
+}
+
+.step-links .current {
+  color: #333;
+  font-weight: bold;
+  margin: 0 5px;
+}
+
+.step-links a:hover {
+  text-decoration: underline;
+}

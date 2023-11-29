@@ -183,7 +183,7 @@ class Project(PostBaseModel):
 
     __tablename__ = 'projects'
 
-    title = Column(String(100))
+    title = Column(String(255))
 
     user_completed_id = Column(Integer, nullable=True)
     text = Column(Text)
@@ -208,6 +208,9 @@ class Project(PostBaseModel):
         projects = session.query(Project).order_by(Project.id.desc()).all()
         return projects
     
+    @classmethod
+    def create_project(cls) -> None:
+        return
 
     @classmethod
     def get_projects_with_options(cls, search_word=None, sort_by=None, page=None) -> List['Project']:
@@ -294,6 +297,11 @@ class Project(PostBaseModel):
         members_is_manager = [member for member in all_members if member.is_manager]
         return members_is_manager
     
+    @classmethod
+    def get_project_instance(cls, title: str, text: str, user_created_id: int) -> 'Project':
+        project = Project(title=title, text=text, user_created_id=user_created_id)
+        return  project
+        
     
 class ProjectComment(PostBaseModel):
     __tablename__ = 'project_comment'
@@ -322,3 +330,56 @@ class ProjectMember(Base):
         # session.close()
         return projects
         
+        
+class DummyData():
+    
+    def get_project_dummy(self) -> Dict[str, Any]:
+        
+        from faker import Faker
+        import random
+        
+        fake = Faker()
+        
+        business_sentence_1 = fake.sentence(nb_words=15, variable_nb_words=True, ext_word_list=None)
+        business_sentence_2 = fake.sentence(nb_words=20, variable_nb_words=True, ext_word_list=None)
+        business_sentence_3 = fake.sentence(nb_words=25, variable_nb_words=True, ext_word_list=None)
+
+        # 3줄 합치기
+        combined_business_sentences = f"{business_sentence_1} {business_sentence_2} {business_sentence_3}"
+        
+        start_date = datetime.strptime('2022-01-01', '%Y-%m-%d')
+        end_date = datetime.today()
+
+        random_date = fake.date_between(start_date=start_date, end_date=end_date)
+        due_date = random_date + timedelta(days=random.randint(10, 60))
+        
+        fake_data = {
+            'user_created_id' : random.randint(1,4),
+            'title': fake.sentence(nb_words=10, variable_nb_words=True, ext_word_list=None),
+            'datetime_created': random_date,
+            'due_date': due_date,
+            'text': combined_business_sentences
+        }
+        
+        return fake_data
+    
+    def add_proejct_dummy(self):
+        
+        dummy_data = self.get_project_dummy()
+        dummy_project = Project().get_project_instance(
+            user_created_id=dummy_data['user_created_id'],
+            title=dummy_data['title'],
+            text=dummy_data['text']
+            )
+        dummy_project.datetime_created=dummy_data['datetime_created']
+        dummy_project.date_due=dummy_data['due_date']
+        
+        session.add(dummy_project)
+        session.commit()
+        
+        return 
+    
+    def add_proejct_dummys(self, number: int) -> None:
+        for _ in range(10):
+            self.add_proejct_dummy()
+        return 
