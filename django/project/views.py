@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 from django.http import JsonResponse
 from core.models import Project, CustomUser, ProjectMember
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from manage_project.settings.database import session
 # from accounts.models import CustomUser
 from .models import  ProjectComment
@@ -24,7 +25,7 @@ def project_index(request):
 
 class AllProjectsList(TemplateView):
     template_name = 'all_projects_list.html'
-
+    paginate_by = 15
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
@@ -35,18 +36,18 @@ class AllProjectsList(TemplateView):
         
         search_word = request.GET.get('q')
         sort = request.GET.get('sort')
+        page = request.GET.get('page')
         context['sort'] = sort if sort else ""
         context['q'] = search_word if search_word else ""
+        context['page'] = page if page else ""
         
-        
-        if search_word is None or len(search_word) == 0 :
-            #* Normla Mode
-            projects = Project.get_projects()
-        else:
-            #* Search Mode
+        # Retrieve all projects
+        if search_word is None or len(search_word) == 0:
             projects = Project.get_projects_with_options(search_word, sort)
-        
-        
+        else:
+            projects = Project.get_projects_with_options(search_word, sort)
+            
+            
         #* DEMO projects
         days_ago = datetime.now(timezone.utc) - timedelta(days=100)
         aa = Project.get_demo_proejct(datetime_created=days_ago)
@@ -54,6 +55,21 @@ class AllProjectsList(TemplateView):
         bb  = Project.get_demo_proejct(datetime_created=days_ago)
         projects.append(aa)
         projects.append(bb)
+        
+        
+        # Paginate the projects
+        paginator = Paginator(projects, self.paginate_by)
+        try:
+            projects = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver the first page.
+            projects = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver the last page of results.
+            projects = paginator.page(paginator.num_pages)
+            
+            
+
         
         
         context['projects'] = projects

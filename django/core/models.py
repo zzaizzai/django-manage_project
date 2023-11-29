@@ -210,7 +210,7 @@ class Project(PostBaseModel):
     
 
     @classmethod
-    def get_projects_with_options(cls, search_word=None, sort_by=None) -> List['Project']:
+    def get_projects_with_options(cls, search_word=None, sort_by=None, page=None) -> List['Project']:
         query = (
             session.query(Project)
             .join(CustomUser, Project.user_created_id == CustomUser.id)
