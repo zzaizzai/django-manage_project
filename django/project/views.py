@@ -26,6 +26,7 @@ def project_index(request):
 class AllProjectsList(TemplateView):
     template_name = 'all_projects_list.html'
     paginate_by = 15
+    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         return context
@@ -304,6 +305,22 @@ class CreateFakeDate(TemplateView):
         from core.models import DummyData
         
         dummy = DummyData()
+        kind = self.kwargs['kind']
+        
+        if kind == 'comment':
+            
+            try:
+                dummy.add_comment_dummys()
+            except Exception as e:
+                print(e)
+                
+            finally:
+                session.close()
+            
+            
+            comment = dummy.get_comment_dummy(1)
+            return JsonResponse(comment)
+        
         fake_data = dummy.get_project_dummy()
         return JsonResponse(fake_data)
     
@@ -314,6 +331,7 @@ class CreateFakeDate(TemplateView):
 
         try:
             aa.add_proejct_dummys(25)
+            aa.add_comment_dummys(5)
         except Exception as e:
             print(e)
             messages.warning(request, f"failed to update: {e}")

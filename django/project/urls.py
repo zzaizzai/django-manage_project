@@ -11,6 +11,6 @@ urlpatterns = [
     path('edit/<int:pk>', EditProject.as_view(), name='edit_project'),
     path('add_project_member/<int:pk>', AddProjectMember.as_view(), name='add_project_member'),
     path('edit_project_member/<int:pk>', EditProjectMember.as_view(), name='edit_project_member'),
-    path('create_fake', CreateFakeDate.as_view(), name='create_fake'),
+    path('create_fake/<str:kind>', CreateFakeDate.as_view(), name='create_fake'),
     
 ]

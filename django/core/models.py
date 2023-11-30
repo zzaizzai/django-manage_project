@@ -7,6 +7,10 @@ from maintenance.models import MasterDepartment
 from sqlalchemy.orm import undefer
 from sqlalchemy import text, Column, Integer, String, create_engine, DateTime, Date, Sequence, Boolean, Text, func
 from sqlalchemy import or_
+from faker import Faker
+import random
+from sqlalchemy.orm import make_transient
+
 
 class MyModel(Base):
     __tablename__ = 'my_model'
@@ -308,7 +312,15 @@ class ProjectComment(PostBaseModel):
 
     project_id = Column(Integer)
     text = Column(Text)
-
+    
+    @classmethod
+    def get_project_comment_instance(cls, project_id:int,  datetime_created: datetime, text: str, user_created_id: int) -> 'ProjectComment':
+        project_comment = cls(project_id=project_id,datetime_created=datetime_created, text=text, user_created_id=user_created_id)
+        
+        project_comment.datetime_updated = datetime_created
+        
+        return  project_comment
+        
 
 class ProjectMember(Base):
 
@@ -333,16 +345,14 @@ class ProjectMember(Base):
         
 class DummyData():
     
+    def __init__(self):
+        self.fake = Faker()
+    
     def get_project_dummy(self) -> Dict[str, Any]:
         
-        from faker import Faker
-        import random
-        
-        fake = Faker()
-        
-        business_sentence_1 = fake.sentence(nb_words=15, variable_nb_words=True, ext_word_list=None)
-        business_sentence_2 = fake.sentence(nb_words=20, variable_nb_words=True, ext_word_list=None)
-        business_sentence_3 = fake.sentence(nb_words=25, variable_nb_words=True, ext_word_list=None)
+        business_sentence_1 = self.fake.sentence(nb_words=15, variable_nb_words=True, ext_word_list=None)
+        business_sentence_2 = self.fake.sentence(nb_words=20, variable_nb_words=True, ext_word_list=None)
+        business_sentence_3 = self.fake.sentence(nb_words=25, variable_nb_words=True, ext_word_list=None)
 
         # 3줄 합치기
         combined_business_sentences = f"{business_sentence_1} {business_sentence_2} {business_sentence_3}"
@@ -350,12 +360,12 @@ class DummyData():
         start_date = datetime.strptime('2022-01-01', '%Y-%m-%d')
         end_date = datetime.today()
 
-        random_date = fake.date_between(start_date=start_date, end_date=end_date)
+        random_date = self.fake.date_between(start_date=start_date, end_date=end_date)
         due_date = random_date + timedelta(days=random.randint(10, 60))
         
         fake_data = {
             'user_created_id' : random.randint(1,4),
-            'title': fake.sentence(nb_words=10, variable_nb_words=True, ext_word_list=None),
+            'title': self.fake.sentence(nb_words=10, variable_nb_words=True, ext_word_list=None),
             'datetime_created': random_date,
             'due_date': due_date,
             'text': combined_business_sentences
@@ -383,3 +393,58 @@ class DummyData():
         for _ in range(10):
             self.add_proejct_dummy()
         return 
+
+    def get_comment_dummy(self, project_id: int) -> Dict[str, Any]:
+
+        
+        project = session.query(Project).filter_by(id=project_id).first()
+        
+        if project is None:
+            return {}
+                
+        business_sentence_1 = self.fake.sentence(nb_words=15, variable_nb_words=True, ext_word_list=None)
+        
+        start_date = project.datetime_created
+        end_date = datetime.today()
+
+        random_date = self.fake.date_between(start_date=start_date, end_date=end_date)
+        # due_date = random_date + timedelta(days=random.randint(10, 60))
+        
+        fake_data = {
+            'project_id': project_id,
+            'user_created_id' : random.randint(1,4),
+            'datetime_created': random_date,
+            'text': business_sentence_1
+        }
+        
+        return fake_data
+
+    def add_comment_dummy(self, project_id: int) -> None:
+        dummy_data = self.get_comment_dummy(project_id)
+        
+        if len(dummy_data) == 0 :
+            return
+        
+        dummy_project_comment = ProjectComment.get_project_comment_instance(
+            project_id=dummy_data["project_id"],
+            user_created_id=dummy_data["user_created_id"],
+            datetime_created=dummy_data["datetime_created"],
+            text=dummy_data["text"]
+        )
+        session.add(dummy_project_comment)
+        
+        return
+    
+    def add_comment_dummys(self, number: int) -> None:
+        project_last = session.query(Project).order_by(Project.id.desc()).first()
+        project_last_id = project_last.id
+        
+        for project_id in range(1, project_last_id + 1):
+            for _ in range(0, number):
+                self.add_comment_dummy(project_id)
+        # Bulk insert all dummy data at once
+
+        # Commit once at the end
+        session.commit()
+        
+        return

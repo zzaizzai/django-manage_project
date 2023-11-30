@@ -54,7 +54,7 @@ th.col-30 {
         <a class="button blue" href="{% url 'add_project' %}">New</a>
 
         <!--! Create Dummy Data  -->
-        <form action="{% url 'create_fake' %}" method="post">
+        <form action="{% url 'create_fake' 'comment' %}" method="post">
             {% csrf_token %}
             <button class="mx-2 button red" type="submit">CreateDummy</button>
         </form>
